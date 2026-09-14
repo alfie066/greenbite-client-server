@@ -32,118 +32,157 @@
             <div><strong>Contact</strong><span>hello@greenbite.example</span></div>
           </div>
         </div>
-        <div class="showcase-card">
-          <button
-          class="primary"
-          type="button"
-          @click="loadFeaturedItem"
-          >
-          Load featured item from server
-          </button>
-          <div class="plate" aria-hidden="true">{{ featuredItem.emoji }}</div>
+        <div v-if="featuredItem" 
+        class="showcase-card">
+          <div class="plate" aria-hidden="true">
+            {{ featuredItem.emoji }}
+          </div>
+
           <h2>Today's featured option</h2>
-          <p><strong>{{ featuredItem.name }}</strong></p>
+
+          <p>
+            <strong>{{ featuredItem.name }}</strong>
+          </p>
+
           <p>{{ featuredItem.description }}</p>
-          <span class="price">£{{ featuredItem.price.toFixed(2) }}</span>
+
+          <span class="price">
+            £{{ Number(featuredItem.price).toFixed(2) }}
+          </span>
         </div>
       </section>
 
-      <section v-show="page === 'menu'" class="page panel">
-        <p class="eyebrow">GreenBite menu</p>
-        <h2>Explore our food and drinks</h2>
-        <p>All products are written directly in HTML. The controls are placeholders and do not filter the menu.</p>
-        <div class="filters">
-          <label>Search<input type="search" placeholder="Search is not implemented yet"></label>
-          <label>Category<select>
-              <option>All categories</option>
-              <option>Pizza</option>
-              <option>Savoury</option>
-              <option>Drinks</option>
-              <option>Sweets</option>
-              <option>Burgers</option>
-            </select></label>
-          <label>Dietary tag<select>
-              <option>All dietary tags</option>
-              <option>Gluten-free</option>
-              <option>Vegetarian</option>
-              <option>Vegan</option>
-            </select></label>
-          <label class="check-row"><input type="checkbox"> Available only</label>
+      <section
+  v-show="page === 'menu'"
+  class="page panel"
+>
+  <p class="eyebrow">GreenBite menu</p>
+
+  <h2>Explore our food and drinks</h2>
+
+  <p>
+    Menu items are loaded from the GreenBite server.
+    The filter controls are not implemented yet.
+  </p>
+
+  <div class="filters">
+    <label>
+      Search
+
+      <input
+        type="search"
+        placeholder="Search is not implemented yet"
+      >
+    </label>
+
+    <label>
+      Category
+
+      <select v-model="selectedCategory">
+        <option value="">
+          All categories
+        </option>
+
+        <option
+          v-for="category in categories"
+          :key="category"
+          :value="category"
+        >
+          {{ category }}
+        </option>
+      </select>
+    </label>
+
+    <label>
+      Category
+
+      <select v-model="selectedDietaryTag">
+        <option value="">
+          All dietary tags
+        </option>
+
+        <option
+          v-for="tag in dietaryTags"
+          :key="tag"
+          :value="tag"
+        >
+          {{ tag }}
+        </option>
+      </select>
+    </label>
+  </div>
+
+  <p class="notice">
+    Search and filters are intentionally non-functional.
+  </p>
+
+  <div class="menu-grid">
+    <article
+      v-for="item in menuItems"
+      :key="item.id"
+      class="menu-card"
+      :class="{ muted: !item.available }"
+    >
+      <div
+        class="menu-emoji"
+        aria-hidden="true"
+      >
+        {{ item.emoji }}
+      </div>
+
+      <div class="menu-card-content">
+        <div class="card-head">
+          <h3>{{ item.name }}</h3>
+
+          <span>
+            £{{ Number(item.price).toFixed(2) }}
+          </span>
         </div>
-        <p class="notice">Search and filters are intentionally non-functional.</p>
-        <div class="menu-grid">
-          <article class="menu-card">
-            <div class="menu-emoji" aria-hidden="true">🍕</div>
-            <div class="menu-card-content">
-              <div class="card-head">
-                <h3>Gluten-Free Margherita Pizza</h3><span>£7.50</span>
-              </div>
-              <p>Tomato, mozzarella and basil on a gluten-free base.</p>
-              <div class="tags"><span class="tag main">Pizza</span><span class="tag">gluten-free</span><span
-                  class="tag">vegetarian</span></div>
-              <button class="small" type="button" @click="showPage('request')">Request this item</button>
-            </div>
-          </article>
-          <article class="menu-card">
-            <div class="menu-emoji" aria-hidden="true">🥪</div>
-            <div class="menu-card-content">
-              <div class="card-head">
-                <h3>Chicken Pesto Panini</h3><span>£5.80</span>
-              </div>
-              <p>Toasted panini with chicken, pesto and mozzarella.</p>
-              <div class="tags"><span class="tag main">Savoury</span><span class="tag">contains dairy</span></div>
-              <button class="small" type="button" @click="showPage('request')">Request this item</button>
-            </div>
-          </article>
-          <article class="menu-card">
-            <div class="menu-emoji" aria-hidden="true">🥤</div>
-            <div class="menu-card-content">
-              <div class="card-head">
-                <h3>Iced Latte</h3><span>£3.20</span>
-              </div>
-              <p>Cold espresso with milk served over ice.</p>
-              <div class="tags"><span class="tag main">Drinks</span><span class="tag">vegetarian</span></div>
-              <button class="small" type="button" @click="showPage('request')">Request this item</button>
-            </div>
-          </article>
-          <article class="menu-card">
-            <div class="menu-emoji" aria-hidden="true">🍫</div>
-            <div class="menu-card-content">
-              <div class="card-head">
-                <h3>Vegan Chocolate Brownie</h3><span>£3.60</span>
-              </div>
-              <p>Rich chocolate brownie made without dairy ingredients.</p>
-              <div class="tags"><span class="tag main">Sweets</span><span class="tag">vegan</span><span
-                  class="tag">dairy-free</span></div>
-              <button class="small" type="button" @click="showPage('request')">Request this item</button>
-            </div>
-          </article>
-          <article class="menu-card muted">
-            <div class="menu-emoji" aria-hidden="true">🍔</div>
-            <div class="menu-card-content">
-              <div class="card-head">
-                <h3>GreenBite Halloumi Burger</h3><span>£8.40</span>
-              </div>
-              <p>Grilled halloumi, salad, tomato relish and toasted bun.</p>
-              <div class="tags"><span class="tag main">Burgers</span><span class="tag">vegetarian</span><span
-                  class="tag warn">Unavailable</span></div>
-              <button class="small" type="button" disabled>Currently unavailable</button>
-            </div>
-          </article>
-          <article class="menu-card">
-            <div class="menu-emoji" aria-hidden="true">🥗</div>
-            <div class="menu-card-content">
-              <div class="card-head">
-                <h3>Moroccan Chickpea Salad</h3><span>£6.20</span>
-              </div>
-              <p>Chickpeas, roasted vegetables, herbs and lemon dressing.</p>
-              <div class="tags"><span class="tag main">Savoury</span><span class="tag">vegan</span><span
-                  class="tag">gluten-free</span></div>
-              <button class="small" type="button" @click="showPage('request')">Request this item</button>
-            </div>
-          </article>
+
+        <p>{{ item.description }}</p>
+
+        <div class="tags">
+          <span class="tag main">
+            {{ item.category }}
+          </span>
+
+          <span
+            v-for="tag in item.dietaryTags"
+            :key="`${item.id}-${tag}`"
+            class="tag"
+          >
+            {{ tag }}
+          </span>
+
+          <span
+            v-if="!item.available"
+            class="tag warn"
+          >
+            Unavailable
+          </span>
         </div>
-      </section>
+
+        <button
+          v-if="item.available"
+          class="small"
+          type="button"
+          @click="requestItem(item)"
+        >
+          Request this item
+        </button>
+
+        <button
+          v-else
+          class="small"
+          type="button"
+          disabled
+        >
+          Currently unavailable
+        </button>
+      </div>
+    </article>
+  </div>
+</section>
 
       <section v-show="page === 'request'" class="page grid-two align-start">
         <div class="panel">
@@ -243,29 +282,66 @@
 </template>
 
 <script setup>
-
-import { ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 const page = ref('home')
 const businessName = ref('GreenBite Bistro')
-const featuredItem = ref({
-name: 'Gluten-Free Margherita Pizza',
-description:
-'Tomato, mozzarella and basil on a gluten-free base.',
-price: 7.5,
-emoji: '🍕'
+const menuItems = ref([])
+const featuredItem = ref(null)
+const selectedCategory = ref('')
+const selectedDietaryTag = ref('')
+const categories = computed(() => {
+  return [
+    ...new Set(
+      menuItems.value.map((item) => item.category)
+    )
+  ].sort()
 })
+
+const dietaryTags = computed(() => {
+  return [
+    ...new Set(
+      menuItems.value.flatMap((item) => {
+        return item.dietaryTags ?? []
+      })
+    )
+  ].sort()
+})
+
 
 function showPage(pageName) {
   page.value = pageName
   window.scrollTo(0, 0)
 }
 
-async function loadFeaturedItem() {
-const response = await fetch(
-'http://localhost:3000/api/featured-item'
-)
-const data = await response.json()
-featuredItem.value = data
+function requestItem(item) {
+  console.log('Selected menu item:', item)
+  showPage('request')
 }
+
+async function loadFeaturedItem() {
+  const response = await fetch(
+  'http://localhost:3000/api/featured-item'
+)
+
+  const data = await response.json()
+  featuredItem.value = data
+}
+
+async function loadMenu() {
+  const response = await fetch(
+    'http://localhost:3000/api/menu'
+  )
+
+  const data = await response.json()
+
+  console.log('Menu received from server:', data)
+
+  menuItems.value = data
+}
+
+onMounted(() => {
+  loadMenu()
+  loadFeaturedItem()
+})
 </script>
