@@ -1,14 +1,33 @@
 <template>
-  <div class="application min-vh-100"> <header class="sticky-top"> <nav class="navbar navbar-expand-lg bg-paper border-bottom border-warning border-3 shadow-sm" aria-label="Main navigation" > <div class="container-xl"> <a href="#" class="navbar-brand d-flex align-items-center gap-2" @click.prevent="showPage('home')" > <span class="brand-mark"> GB </span>
+  <div
+    v-if="siteDetails"
+    class="application min-vh-100"
+  >
+    <header class="sticky-top">
+      <nav
+        class="navbar navbar-expand-lg bg-paper border-bottom border-warning border-3 shadow-sm"
+        aria-label="Main navigation"
+      >
+        <div class="container-xl">
+  <button
+    type="button"
+    class="navbar-brand d-flex align-items-center gap-2 border-0 bg-transparent p-0"
+    @click="showPage('home')"
+  >
+    <span class="brand-mark">
+      {{ siteDetails.initials }}
+    </span>
 
-        <span class="d-flex flex-column">
-          <strong>{{ businessName }}</strong>
+    <span class="d-flex flex-column text-start">
+      <strong>
+        {{ siteDetails.businessName }}
+      </strong>
 
-          <small class="text-secondary">
-            Fresh food near campus
+      <small class="text-secondary">
+        {{ siteDetails.tagline }}
       </small>
     </span>
-  </a>
+  </button>
 
           <button
             class="navbar-toggler"
@@ -83,6 +102,7 @@
     </header>
 
     <main class="container-xl py-4 py-lg-5">
+      <!-- Home page -->
 
       <section
         v-show="page === 'home'"
@@ -90,17 +110,15 @@
       >
         <div class="col-12 col-lg-7">
           <span class="badge greenbite-label mb-3">
-            GreenBite Bistro customer application
+            {{ siteDetails.home.label }}
           </span>
 
           <h1 class="display-3 fw-bold hero-title mb-4">
-            Fresh lunches, drinks and allergy-aware options in one
-            simple web application.
+            {{ siteDetails.home.heading }}
           </h1>
 
           <p class="lead text-secondary mb-4">
-            Explore today's menu, identify suitable dietary options,
-            and send a collection request or enquiry to GreenBite Bistro.
+            {{ siteDetails.home.introduction }}
           </p>
 
           <div class="d-flex flex-wrap gap-3 mb-4">
@@ -130,7 +148,7 @@
                   </strong>
 
                   <small class="text-secondary">
-                    Monday to Friday, 08:00 to 17:00
+                    {{ siteDetails.businessInformation.openingHours }}
                   </small>
                 </div>
               </div>
@@ -144,7 +162,7 @@
                   </strong>
 
                   <small class="text-secondary">
-                    Aston University campus, Birmingham
+                    {{ siteDetails.businessInformation.location }}
                   </small>
                 </div>
               </div>
@@ -158,7 +176,7 @@
                   </strong>
 
                   <small class="text-secondary">
-                    hello@greenbite.example
+                    {{ siteDetails.businessInformation.contact }}
                   </small>
                 </div>
               </div>
@@ -198,16 +216,26 @@
               <span class="badge price-badge">
                 £{{ Number(featuredItem.price).toFixed(2) }}
               </span>
+
+              <button
+                class="btn btn-outline-greenbite btn-sm mt-3"
+                type="button"
+                @click="requestItem(featuredItem)"
+              >
+                Request this item
+              </button>
             </div>
           </article>
         </div>
       </section>
 
+      <!-- Menu page -->
+
       <section v-show="page === 'menu'">
         <div class="card page-card shadow-sm border-0">
           <div class="card-body p-4 p-lg-5">
             <span class="badge greenbite-label mb-3">
-              GreenBite menu
+              {{ siteDetails.businessName }} menu
             </span>
 
             <h2 class="display-6 fw-bold">
@@ -215,8 +243,8 @@
             </h2>
 
             <p class="text-secondary mb-4">
-              Browse the GreenBite menu or narrow the results by
-              category and dietary preference.
+              Browse the menu or narrow the results by category
+              and dietary preference.
             </p>
 
             <div class="filter-panel p-3 p-lg-4 mb-4">
@@ -311,9 +339,7 @@
                 </div>
               </div>
 
-              <div
-                class="d-flex flex-wrap align-items-center gap-3 mt-3"
-              >
+              <div class="d-flex flex-wrap align-items-center gap-3 mt-3">
                 <button
                   class="btn btn-outline-secondary btn-sm"
                   type="button"
@@ -338,7 +364,10 @@
               No menu items match the selected filters.
             </div>
 
-            <div v-else class="row g-4">
+            <div
+              v-else
+              class="row g-4"
+            >
               <div
                 v-for="item in filteredMenuItems"
                 :key="item.id"
@@ -422,6 +451,8 @@
         </div>
       </section>
 
+      <!-- Order or Enquiry page -->
+
       <section
         v-show="page === 'request'"
         class="row g-4 align-items-start"
@@ -434,7 +465,7 @@
               </span>
 
               <h2 class="display-6 fw-bold">
-                Contact GreenBite Bistro
+                Contact {{ siteDetails.businessName }}
               </h2>
 
               <p class="text-secondary">
@@ -576,9 +607,7 @@
         </div>
 
         <div class="col-12 col-lg-4">
-          <aside
-            class="card confirmation-card shadow-sm border-0"
-          >
+          <aside class="card confirmation-card shadow-sm border-0">
             <div class="card-body p-4">
               <h3 class="h5 fw-bold">
                 Confirmation preview
@@ -599,6 +628,8 @@
         </div>
       </section>
 
+      <!-- Staff page -->
+
       <section v-show="page === 'staff'">
         <div class="card page-card staff-page shadow-sm border-0">
           <div class="card-body p-4 p-lg-5">
@@ -611,16 +642,15 @@
             </h2>
 
             <p class="text-secondary">
-              These requests are currently written directly in the template.
+              These example requests are currently written directly
+              in the template.
             </p>
 
             <div class="row g-4 mt-1">
               <div class="col-12 col-lg-6">
                 <article class="card request-card h-100 shadow-sm">
                   <div class="card-body">
-                    <div
-                      class="d-flex justify-content-between gap-3 mb-3"
-                    >
+                    <div class="d-flex justify-content-between gap-3 mb-3">
                       <h3 class="h5 fw-bold mb-0">
                         Maria
                       </h3>
@@ -630,16 +660,26 @@
                       </span>
                     </div>
 
-                    <p><strong>Reference:</strong> 101</p>
-                    <p><strong>Request type:</strong> Order</p>
-                    <p><strong>Contact:</strong> maria@example.com</p>
+                    <p>
+                      <strong>Reference:</strong> 101
+                    </p>
+
+                    <p>
+                      <strong>Request type:</strong> Order
+                    </p>
+
+                    <p>
+                      <strong>Contact:</strong> maria@example.com
+                    </p>
 
                     <p>
                       <strong>Item:</strong>
                       Gluten-Free Margherita Pizza
                     </p>
 
-                    <p><strong>Preferred time:</strong> 12:30</p>
+                    <p>
+                      <strong>Preferred time:</strong> 12:30
+                    </p>
 
                     <p class="mb-0">
                       <strong>Message:</strong>
@@ -652,9 +692,7 @@
               <div class="col-12 col-lg-6">
                 <article class="card request-card h-100 shadow-sm">
                   <div class="card-body">
-                    <div
-                      class="d-flex justify-content-between gap-3 mb-3"
-                    >
+                    <div class="d-flex justify-content-between gap-3 mb-3">
                       <h3 class="h5 fw-bold mb-0">
                         Ahmed
                       </h3>
@@ -664,11 +702,25 @@
                       </span>
                     </div>
 
-                    <p><strong>Reference:</strong> 102</p>
-                    <p><strong>Request type:</strong> Enquiry</p>
-                    <p><strong>Contact:</strong> 07123 456789</p>
-                    <p><strong>Item:</strong> Iced Latte</p>
-                    <p><strong>Preferred time:</strong> Not specified</p>
+                    <p>
+                      <strong>Reference:</strong> 102
+                    </p>
+
+                    <p>
+                      <strong>Request type:</strong> Enquiry
+                    </p>
+
+                    <p>
+                      <strong>Contact:</strong> 07123 456789
+                    </p>
+
+                    <p>
+                      <strong>Item:</strong> Iced Latte
+                    </p>
+
+                    <p>
+                      <strong>Preferred time:</strong> Not specified
+                    </p>
 
                     <p class="mb-0">
                       <strong>Message:</strong>
@@ -681,6 +733,8 @@
           </div>
         </div>
       </section>
+
+      <!-- Networking page -->
 
       <section v-show="page === 'network'">
         <div class="card page-card shadow-sm border-0">
@@ -700,9 +754,7 @@
 
             <div class="row g-3 my-4">
               <div class="col-12 col-md-6 col-xl-3">
-                <div
-                  class="card architecture-card h-100 text-center"
-                >
+                <div class="card architecture-card h-100 text-center">
                   <div class="card-body">
                     <strong>Browser</strong>
 
@@ -714,9 +766,7 @@
               </div>
 
               <div class="col-12 col-md-6 col-xl-3">
-                <div
-                  class="card architecture-card h-100 text-center"
-                >
+                <div class="card architecture-card h-100 text-center">
                   <div class="card-body">
                     <strong>Vue client</strong>
 
@@ -728,9 +778,7 @@
               </div>
 
               <div class="col-12 col-md-6 col-xl-3">
-                <div
-                  class="card architecture-card h-100 text-center"
-                >
+                <div class="card architecture-card h-100 text-center">
                   <div class="card-body">
                     <strong>Express server</strong>
 
@@ -742,9 +790,7 @@
               </div>
 
               <div class="col-12 col-md-6 col-xl-3">
-                <div
-                  class="card architecture-card h-100 text-center"
-                >
+                <div class="card architecture-card h-100 text-center">
                   <div class="card-body">
                     <strong>JSON storage</strong>
 
@@ -804,14 +850,29 @@
       </section>
     </main>
   </div>
+
+  <div
+    v-else
+    class="container py-5 text-center"
+  >
+    <div
+      class="spinner-border"
+      role="status"
+      aria-label="Loading application"
+    ></div>
+
+    <p class="mt-3 text-secondary">
+      Loading application...
+    </p>
+  </div>
 </template>
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 
 const page = ref('home')
-const businessName = ref('GreenBite Bistro')
 
+const siteDetails = ref(null)
 const menuItems = ref([])
 const featuredItem = ref(null)
 
@@ -849,13 +910,21 @@ const filteredMenuItems = computed(() => {
   return menuItems.value.filter((item) => {
     const itemTags = item.dietaryTags ?? []
 
+    const name = item.name?.toLowerCase() ?? ''
+    const description =
+      item.description?.toLowerCase() ?? ''
+    const category =
+      item.category?.toLowerCase() ?? ''
+
     const matchesSearch =
       normalisedSearch === '' ||
-      item.name.toLowerCase().includes(normalisedSearch) ||
-      item.description.toLowerCase().includes(normalisedSearch) ||
-      item.category.toLowerCase().includes(normalisedSearch) ||
+      name.includes(normalisedSearch) ||
+      description.includes(normalisedSearch) ||
+      category.includes(normalisedSearch) ||
       itemTags.some((tag) => {
-        return tag.toLowerCase().includes(normalisedSearch)
+        return tag
+          .toLowerCase()
+          .includes(normalisedSearch)
       })
 
     const matchesCategory =
@@ -900,29 +969,50 @@ function clearFilters() {
   availableOnly.value = false
 }
 
-async function loadFeaturedItem() {
-  const response = await fetch(
-    'http://localhost:3000/api/featured-item'
-  )
+async function loadApplicationData() {
+  const [
+    siteResponse,
+    menuResponse,
+    featuredResponse
+  ] = await Promise.all([
+    fetch('http://localhost:3000/api/site-details'),
+    fetch('http://localhost:3000/api/menu'),
+    fetch('http://localhost:3000/api/featured-item')
+  ])
 
-  const data = await response.json()
-  featuredItem.value = data
+  if (
+    !siteResponse.ok ||
+    !menuResponse.ok ||
+    !featuredResponse.ok
+  ) {
+    throw new Error(
+      'The application data could not be loaded'
+    )
+  }
+
+  const [
+    siteData,
+    menuData,
+    featuredData
+  ] = await Promise.all([
+    siteResponse.json(),
+    menuResponse.json(),
+    featuredResponse.json()
+  ])
+
+  siteDetails.value = siteData
+  menuItems.value = menuData
+  featuredItem.value = featuredData
 }
 
-async function loadMenu() {
-  const response = await fetch(
-    'http://localhost:3000/api/menu'
-  )
-
-  const data = await response.json()
-
-  console.log('Menu received from server:', data)
-
-  menuItems.value = data
-}
-
-onMounted(() => {
-  loadMenu()
-  loadFeaturedItem()
+onMounted(async () => {
+  try {
+    await loadApplicationData()
+  } catch (error) {
+    console.error(
+      'Unable to load application data:',
+      error
+    )
+  }
 })
 </script>

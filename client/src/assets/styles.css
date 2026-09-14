@@ -1,17 +1,23 @@
 :root {
-  --green: #214e34;
-  --green-hover: #173a27;
-  --sage: #b7c9a8;
-  --sage-light: #edf3e8;
+  --green: #292b28;
+  --green-hover: #111210;
+
+  --sage: #f2d99c;
+  --sage-light: #fff6dc;
+
   --mustard: #f2b544;
   --mustard-light: #fff0c7;
+
   --tomato: #df5b45;
+
   --cream: #fff7e8;
-  --paper: #fffdf8;
-  --ink: #222821;
-  --muted: #687068;
-  --line: #d9dfd5;
-  --shadow: 0 12px 30px rgba(25, 45, 32, 0.12);
+  --paper: #ffffff;
+
+  --ink: #1d1f1c;
+  --muted: #686b66;
+  --line: #ddd8cc;
+
+  --shadow: 0 12px 30px rgba(29, 31, 28, 0.12);
 }
 
 html {
@@ -36,8 +42,6 @@ body {
     ),
     var(--cream);
 }
-
-/* Navbar */
 
 header.sticky-top {
   z-index: 1030;
@@ -116,7 +120,6 @@ header.sticky-top {
   box-shadow: 0 0 0 0.2rem rgba(33, 78, 52, 0.2);
 }
 
-/* Home page */
 
 .home-section {
   min-height: calc(100vh - 10rem);
@@ -142,7 +145,6 @@ header.sticky-top {
   text-transform: uppercase;
 }
 
-/* Buttons */
 
 .btn.btn-greenbite {
   padding: 0.8rem 1.3rem;
@@ -181,7 +183,6 @@ header.sticky-top {
   color: white !important;
 }
 
-/* Information cards */
 
 .card.info-card {
   border: 1px solid var(--line);
@@ -193,7 +194,6 @@ header.sticky-top {
   padding: 1.15rem;
 }
 
-/* Featured item */
 
 .card.featured-card {
   position: relative;
@@ -276,7 +276,6 @@ header.sticky-top {
   font-weight: 900;
 }
 
-/* Main page cards */
 
 .card.page-card {
   overflow: visible;
@@ -291,7 +290,6 @@ header.sticky-top {
   box-shadow: 0 5px 18px rgba(25, 45, 32, 0.06);
 }
 
-/* Form controls */
 
 .form-control,
 .form-select {
@@ -310,8 +308,6 @@ header.sticky-top {
   border-color: var(--green);
   background-color: var(--green);
 }
-
-/* Menu cards */
 
 .card.menu-card {
   overflow: hidden;
@@ -380,4 +376,50 @@ header.sticky-top {
   line-height: 1 !important;
 
   overflow: visible;
+}
+
+
+.badge.category-badge {
+  display: inline-block;
+  padding: 0.4rem 0.65rem;
+
+  border: 1px solid var(--tomato);
+  border-radius: 0.4rem;
+
+  background-color: var(--tomato) !important;
+  color: white !important;
+
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.badge.dietary-badge {
+  display: inline-block;
+  padding: 0.4rem 0.65rem;
+
+  border: 1px solid #d09a25;
+  border-radius: 0.4rem;
+
+  background-color: var(--mustard-light) !important;
+  color: var(--ink) !important;
+
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.badge.unavailable-badge {
+  display: inline-block;
+  padding: 0.4rem 0.65rem;
+
+  border: 1px solid var(--muted);
+  border-radius: 0.4rem;
+
+  background-color: var(--muted) !important;
+  color: white !important;
+
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
 }
