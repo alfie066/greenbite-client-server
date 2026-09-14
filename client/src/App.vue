@@ -654,10 +654,6 @@
                       <h3 class="h5 fw-bold mb-0">
                         Maria
                       </h3>
-
-                      <span class="badge text-bg-primary">
-                        New
-                      </span>
                     </div>
 
                     <p>
@@ -696,10 +692,6 @@
                       <h3 class="h5 fw-bold mb-0">
                         Ahmed
                       </h3>
-
-                      <span class="badge text-bg-primary">
-                        New
-                      </span>
                     </div>
 
                     <p>
