@@ -1,117 +1,145 @@
 const express = require('express')
 const cors = require('cors')
+
 const app = express()
 const PORT = 3000
 
 app.use(cors())
 app.use(express.json())
 
-// Server acts as the Single Source of Truth
+const siteDetails = {
+  businessName: 'Placeholder Bistro',
+  initials: 'PB',
+  tagline: 'Fresh food near campus',
+
+  home: {
+    label: 'Placeholder Bistro customer application',
+    heading:
+      'Fresh lunches, drinks and allergy-aware options in one simple web application.',
+    introduction:
+      'Explore today\'s menu, identify suitable dietary options, and send a collection request or enquiry.'
+  },
+
+  businessInformation: {
+    openingHours: 'Monday to Friday, 08:00 to 17:00',
+    location: 'Aston University campus, Birmingham',
+    contact: 'hello@placeholder.example'
+  }
+}
+
 const menuItems = [
   {
     id: 1,
     name: 'Gluten-Free Margherita Pizza',
-    price: 7.50,
-    description: 'Tomato, mozzarella and basil on a gluten-free base.',
-    category: 'Pizza',
+    description:
+      'Tomato, mozzarella and basil on a gluten-free base.',
+    price: 7.5,
     emoji: '🍕',
-    tags: ['Pizza', 'gluten-free', 'vegetarian'],
-    available: true,
-    isFeatured: true
+    category: 'Pizza',
+    dietaryTags: ['gluten-free', 'vegetarian'],
+    available: true
   },
   {
     id: 2,
     name: 'Chicken Pesto Panini',
-    price: 5.80,
-    description: 'Toasted panini with chicken, pesto and mozzarella.',
-    category: 'Savoury',
+    description:
+      'Toasted panini with chicken, pesto and mozzarella.',
+    price: 5.8,
     emoji: '🥪',
-    tags: ['Savoury', 'contains dairy'],
-    available: true,
-    isFeatured: false
+    category: 'Savoury',
+    dietaryTags: [],
+    available: true
   },
   {
     id: 3,
     name: 'Iced Latte',
-    price: 3.20,
-    description: 'Cold espresso with milk served over ice.',
-    category: 'Drinks',
+    description:
+      'Cold espresso with milk served over ice.',
+    price: 3.2,
     emoji: '🥤',
-    tags: ['Drinks', 'vegetarian'],
-    available: true,
-    isFeatured: false
+    category: 'Drinks',
+    dietaryTags: ['vegetarian'],
+    available: true
   },
   {
     id: 4,
     name: 'Vegan Chocolate Brownie',
-    price: 3.60,
-    description: 'Rich chocolate brownie made without dairy ingredients.',
-    category: 'Sweets',
+    description:
+      'Rich chocolate brownie made without dairy ingredients.',
+    price: 3.6,
     emoji: '🍫',
-    tags: ['Sweets', 'vegan', 'dairy-free'],
-    available: true,
-    isFeatured: false
+    category: 'Sweets',
+    dietaryTags: ['vegan', 'dairy-free'],
+    available: true
   },
   {
     id: 5,
-    name: 'GreenBite Halloumi Burger',
-    price: 8.40,
-    description: 'Grilled halloumi, salad, tomato relish and toasted bun.',
-    category: 'Burgers',
+    name: 'Placeholder Halloumi Burger',
+    description:
+      'Grilled halloumi, salad, tomato relish and toasted bun.',
+    price: 8.4,
     emoji: '🍔',
-    tags: ['Burgers', 'vegetarian'],
-    available: false,
-    isFeatured: false
+    category: 'Burgers',
+    dietaryTags: ['vegetarian'],
+    available: false
   },
   {
     id: 6,
     name: 'Moroccan Chickpea Salad',
-    price: 6.20,
-    description: 'Chickpeas, roasted vegetables, herbs and lemon dressing.',
-    category: 'Savoury',
+    description:
+      'Chickpeas, roasted vegetables, herbs and lemon dressing.',
+    price: 6.2,
     emoji: '🥗',
-    tags: ['Savoury', 'vegan', 'gluten-free'],
-    available: true,
-    isFeatured: false
+    category: 'Savoury',
+    dietaryTags: ['vegan', 'gluten-free'],
+    available: true
   }
 ]
 
-const customerRequests = [
-  {
-    reference: 101,
-    name: 'Maria',
-    status: 'New',
-    type: 'Order',
-    contact: 'maria@example.com',
-    item: 'Gluten-Free Margherita Pizza',
-    preferredTime: '12:30',
-    message: 'Please keep one available if possible.'
-  },
-  {
-    reference: 102,
-    name: 'Ahmed',
-    status: 'New',
-    type: 'Enquiry',
-    contact: '07123 456789',
-    item: 'Iced Latte',
-    preferredTime: 'Not specified',
-    message: 'Can this be made with oat milk?'
+const featuredItemId = 1
+
+const requests = [] /* empty requests array so far, not sure what i am going to about this */
+
+app.get('/api/site-details', (request, response) => {
+  response.json(siteDetails)
+})
+
+app.get('/api/menu', (request, response) => {
+  response.json(menuItems)
+})
+
+app.get('/api/featured-item', (request, response) => {
+  const featuredItem = menuItems.find(
+    (item) => item.id === featuredItemId
+  )
+
+  if (!featuredItem) {
+    return response.status(404).json({
+      message: 'Featured menu item not found'
+    })
   }
-]
 
-app.get('/api/menu', (req, res) => {
-  res.json(menuItems)
+  response.json(featuredItem)
 })
 
-app.get('/api/featured-item', (req, res) => {
-  const featured = menuItems.find(item => item.isFeatured) || menuItems[0]
-  res.json(featured)
-})
+app.get('/api/requests', (request, response) => {
+  const requestsWithMenuItems = requests.map((customerRequest) => {
+    const menuItem = menuItems.find(
+      (item) => item.id === customerRequest.menuItemId
+    )
 
-app.get('/api/requests', (req, res) => {
-  res.json(customerRequests)
+    return {
+      ...customerRequest,
+      menuItemName:
+        menuItem?.name ?? 'Menu item no longer available'
+    }
+  })
+
+  response.json(requestsWithMenuItems)
 })
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`)
+  console.log(
+    `Placeholder Bistro server running on http://localhost:${PORT}`
+  )
 })
