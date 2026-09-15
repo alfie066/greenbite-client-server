@@ -1,0 +1,15 @@
+open the repo folder in your terminal and type both
+cd client
+npm install
+
+then type
+
+cd ../server
+
+node server.js
+
+then when that is running open a new seperate terminal and type
+
+cd greenbite-client-server/client
+
+npm run dev
