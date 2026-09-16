@@ -96,7 +96,7 @@ const menuItems = [
   }
 ]
 
-const featuredItemId = 1
+const featuredItemId = 2
 
 const requests = [] /* empty requests array so far, not sure what i am going to about this */
 

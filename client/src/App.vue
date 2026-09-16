@@ -102,8 +102,6 @@
     </header>
 
     <main class="container-xl py-4 py-lg-5">
-      <!-- Home page -->
-
       <section
         v-show="page === 'home'"
         class="row g-4 align-items-center home-section"
@@ -229,7 +227,6 @@
         </div>
       </section>
 
-      <!-- Menu page -->
 
       <section v-show="page === 'menu'">
         <div class="card page-card shadow-sm border-0">
@@ -451,7 +448,6 @@
         </div>
       </section>
 
-      <!-- Order or Enquiry page -->
 
       <section
         v-show="page === 'request'"
@@ -628,7 +624,6 @@
         </div>
       </section>
 
-      <!-- Staff page -->
 
       <section v-show="page === 'staff'">
         <div class="card page-card staff-page shadow-sm border-0">
@@ -725,8 +720,6 @@
           </div>
         </div>
       </section>
-
-      <!-- Networking page -->
 
       <section v-show="page === 'network'">
         <div class="card page-card shadow-sm border-0">
@@ -841,21 +834,6 @@
         </div>
       </section>
     </main>
-  </div>
-
-  <div
-    v-else
-    class="container py-5 text-center"
-  >
-    <div
-      class="spinner-border"
-      role="status"
-      aria-label="Loading application"
-    ></div>
-
-    <p class="mt-3 text-secondary">
-      Loading application...
-    </p>
   </div>
 </template>
 
