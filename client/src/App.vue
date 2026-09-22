@@ -214,7 +214,7 @@
               </p>
 
               <span class="badge price-badge">
-                £{{ Number(featuredItem.price).toFixed(2) }}
+                {{ formatPrice(featuredItem.price) }}
               </span>
 
               <button
@@ -396,7 +396,7 @@
                         </h3>
 
                         <span class="badge price-badge">
-                          £{{ Number(item.price).toFixed(2) }}
+                          {{ formatPrice(item.price) }}
                         </span>
                       </div>
 
@@ -847,26 +847,51 @@
     v-else
     class="container py-5 text-center"
   >
-    <div
-      class="spinner-border"
-      role="status"
-      aria-label="Loading application"
-    ></div>
+    <template v-if="loadError">
+      <div
+        class="alert alert-danger"
+        role="alert"
+      >
+        {{ loadError }}
+      </div>
 
-    <p class="mt-3 text-secondary">
-      Loading application...
-    </p>
+      <button
+        class="btn btn-outline-danger btn-sm"
+        type="button"
+        @click="loadApplicationData"
+      >
+        Try again
+      </button>
+    </template>
+
+    <template v-else>
+      <div
+        class="spinner-border"
+        role="status"
+        aria-label="Loading application"
+      ></div>
+
+      <p class="mt-3 text-secondary">
+        Loading application...
+      </p>
+    </template>
   </div>
 </template>
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 
+// Falls back to localhost for local development; set VITE_API_BASE_URL
+// in a .env file when deploying against a different server.
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000'
+
 const page = ref('home')
 
 const siteDetails = ref(null)
 const menuItems = ref([])
 const featuredItem = ref(null)
+const loadError = ref(null)
 
 const searchTerm = ref('')
 const selectedCategory = ref('')
@@ -961,50 +986,59 @@ function clearFilters() {
   availableOnly.value = false
 }
 
-async function loadApplicationData() {
-  const [
-    siteResponse,
-    menuResponse,
-    featuredResponse
-  ] = await Promise.all([
-    fetch('http://localhost:3000/api/site-details'),
-    fetch('http://localhost:3000/api/menu'),
-    fetch('http://localhost:3000/api/featured-item')
-  ])
-
-  if (
-    !siteResponse.ok ||
-    !menuResponse.ok ||
-    !featuredResponse.ok
-  ) {
-    throw new Error(
-      'The application data could not be loaded'
-    )
-  }
-
-  const [
-    siteData,
-    menuData,
-    featuredData
-  ] = await Promise.all([
-    siteResponse.json(),
-    menuResponse.json(),
-    featuredResponse.json()
-  ])
-
-  siteDetails.value = siteData
-  menuItems.value = menuData
-  featuredItem.value = featuredData
+function formatPrice(value) {
+  return `£${Number(value).toFixed(2)}`
 }
 
-onMounted(async () => {
+async function loadApplicationData() {
+  loadError.value = null
+
   try {
-    await loadApplicationData()
+    const [
+      siteResponse,
+      menuResponse,
+      featuredResponse
+    ] = await Promise.all([
+      fetch(`${API_BASE_URL}/api/site-details`),
+      fetch(`${API_BASE_URL}/api/menu`),
+      fetch(`${API_BASE_URL}/api/featured-item`)
+    ])
+
+    if (
+      !siteResponse.ok ||
+      !menuResponse.ok ||
+      !featuredResponse.ok
+    ) {
+      throw new Error(
+        'The application data could not be loaded'
+      )
+    }
+
+    const [
+      siteData,
+      menuData,
+      featuredData
+    ] = await Promise.all([
+      siteResponse.json(),
+      menuResponse.json(),
+      featuredResponse.json()
+    ])
+
+    siteDetails.value = siteData
+    menuItems.value = menuData
+    featuredItem.value = featuredData
   } catch (error) {
     console.error(
       'Unable to load application data:',
       error
     )
+
+    loadError.value =
+      'Something went wrong loading the site. Please check the server is running and try again.'
   }
+}
+
+onMounted(() => {
+  loadApplicationData()
 })
 </script>

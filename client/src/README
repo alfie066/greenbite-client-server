@@ -1,4 +1,5 @@
 open the repo folder in your terminal and type both
+
 cd client
 npm install
 

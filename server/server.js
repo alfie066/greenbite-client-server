@@ -98,7 +98,8 @@ const menuItems = [
 
 const featuredItemId = 1
 
-const requests = [] /* empty requests array so far, not sure what i am going to about this */
+// Populated once customer requests can be submitted and persisted.
+const requests = []
 
 app.get('/api/site-details', (request, response) => {
   response.json(siteDetails)
@@ -136,6 +137,23 @@ app.get('/api/requests', (request, response) => {
   })
 
   response.json(requestsWithMenuItems)
+})
+
+// Catches requests to routes that don't exist.
+app.use((request, response) => {
+  response.status(404).json({
+    message: 'Route not found'
+  })
+})
+
+// Catches any error thrown or passed to next() in a route above,
+// so a bug in one request can't crash the whole server unhandled.
+app.use((error, request, response, next) => {
+  console.error(error)
+
+  response.status(500).json({
+    message: 'Internal server error'
+  })
 })
 
 app.listen(PORT, () => {
