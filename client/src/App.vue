@@ -1,30 +1,33 @@
 <template>
-  <div v-if="siteDetails" class="application min-vh-100">
+  <div
+    v-if="siteDetails"
+    class="application min-vh-100"
+  >
     <header class="sticky-top">
       <nav
         class="navbar navbar-expand-lg bg-paper border-bottom border-warning border-3 shadow-sm"
         aria-label="Main navigation"
       >
         <div class="container-xl">
-          <button
-            type="button"
-            class="navbar-brand d-flex align-items-center gap-2 border-0 bg-transparent p-0"
-            @click="showPage('home')"
-          >
-            <span class="brand-mark">
-              {{ siteDetails.initials }}
-            </span>
+  <button
+    type="button"
+    class="navbar-brand d-flex align-items-center gap-2 border-0 bg-transparent p-0"
+    @click="showPage('home')"
+  >
+    <span class="brand-mark">
+      {{ siteDetails.initials }}
+    </span>
 
-            <span class="d-flex flex-column text-start">
-              <strong>
-                {{ siteDetails.businessName }}
-              </strong>
+    <span class="d-flex flex-column text-start">
+      <strong>
+        {{ siteDetails.businessName }}
+      </strong>
 
-              <small class="text-secondary">
-                {{ siteDetails.tagline }}
-              </small>
-            </span>
-          </button>
+      <small class="text-secondary">
+        {{ siteDetails.tagline }}
+      </small>
+    </span>
+  </button>
 
           <button
             class="navbar-toggler"
@@ -38,7 +41,10 @@
             <span class="navbar-toggler-icon"></span>
           </button>
 
-          <div id="greenBiteNavigation" class="collapse navbar-collapse">
+          <div
+            id="greenBiteNavigation"
+            class="collapse navbar-collapse"
+          >
             <div class="navbar-nav ms-auto gap-lg-1 mt-3 mt-lg-0">
               <button
                 type="button"
@@ -135,7 +141,9 @@
             <div class="col-12 col-md-4">
               <div class="card info-card h-100 shadow-sm">
                 <div class="card-body">
-                  <strong class="d-block mb-1"> Opening hours </strong>
+                  <strong class="d-block mb-1">
+                    Opening hours
+                  </strong>
 
                   <small class="text-secondary">
                     {{ siteDetails.businessInformation.openingHours }}
@@ -147,7 +155,9 @@
             <div class="col-12 col-md-4">
               <div class="card info-card h-100 shadow-sm">
                 <div class="card-body">
-                  <strong class="d-block mb-1"> Location </strong>
+                  <strong class="d-block mb-1">
+                    Location
+                  </strong>
 
                   <small class="text-secondary">
                     {{ siteDetails.businessInformation.location }}
@@ -159,7 +169,9 @@
             <div class="col-12 col-md-4">
               <div class="card info-card h-100 shadow-sm">
                 <div class="card-body">
-                  <strong class="d-block mb-1"> Contact </strong>
+                  <strong class="d-block mb-1">
+                    Contact
+                  </strong>
 
                   <small class="text-secondary">
                     {{ siteDetails.businessInformation.contact }}
@@ -171,11 +183,19 @@
         </div>
 
         <div class="col-12 col-lg-5">
-          <article v-if="featuredItem" class="card featured-card text-center">
-            <span class="featured-ribbon"> Chef's pick </span>
+          <article
+            v-if="featuredItem"
+            class="card featured-card text-center"
+          >
+            <span class="featured-ribbon">
+              Chef's pick
+            </span>
 
             <div class="card-body p-4 p-xl-5">
-              <div class="featured-plate mx-auto mb-4" aria-hidden="true">
+              <div
+                class="featured-plate mx-auto mb-4"
+                aria-hidden="true"
+              >
                 {{ featuredItem.emoji }}
               </div>
 
@@ -207,6 +227,7 @@
         </div>
       </section>
 
+
       <section v-show="page === 'menu'">
         <div class="card page-card shadow-sm border-0">
           <div class="card-body p-4 p-lg-5">
@@ -214,17 +235,22 @@
               {{ siteDetails.businessName }} menu
             </span>
 
-            <h2 class="display-6 fw-bold">Explore our food and drinks</h2>
+            <h2 class="display-6 fw-bold">
+              Explore our food and drinks
+            </h2>
 
             <p class="text-secondary mb-4">
-              Browse the menu or narrow the results by category and dietary
-              preference.
+              Browse the menu or narrow the results by category
+              and dietary preference.
             </p>
 
             <div class="filter-panel p-3 p-lg-4 mb-4">
               <div class="row g-3 align-items-end">
                 <div class="col-12 col-lg-6">
-                  <label for="menuSearch" class="form-label fw-bold">
+                  <label
+                    for="menuSearch"
+                    class="form-label fw-bold"
+                  >
                     Search
                   </label>
 
@@ -234,11 +260,14 @@
                     class="form-control"
                     type="search"
                     placeholder="Search by name, category or dietary tag"
-                  />
+                  >
                 </div>
 
                 <div class="col-12 col-md-6 col-lg-3">
-                  <label for="categoryFilter" class="form-label fw-bold">
+                  <label
+                    for="categoryFilter"
+                    class="form-label fw-bold"
+                  >
                     Category
                   </label>
 
@@ -247,7 +276,9 @@
                     v-model="selectedCategory"
                     class="form-select"
                   >
-                    <option value="">All categories</option>
+                    <option value="">
+                      All categories
+                    </option>
 
                     <option
                       v-for="category in categories"
@@ -260,7 +291,10 @@
                 </div>
 
                 <div class="col-12 col-md-6 col-lg-3">
-                  <label for="dietaryFilter" class="form-label fw-bold">
+                  <label
+                    for="dietaryFilter"
+                    class="form-label fw-bold"
+                  >
                     Dietary tag
                   </label>
 
@@ -269,9 +303,15 @@
                     v-model="selectedDietaryTag"
                     class="form-select"
                   >
-                    <option value="">All dietary tags</option>
+                    <option value="">
+                      All dietary tags
+                    </option>
 
-                    <option v-for="tag in dietaryTags" :key="tag" :value="tag">
+                    <option
+                      v-for="tag in dietaryTags"
+                      :key="tag"
+                      :value="tag"
+                    >
                       {{ tag }}
                     </option>
                   </select>
@@ -284,9 +324,12 @@
                       v-model="availableOnly"
                       class="form-check-input"
                       type="checkbox"
-                    />
+                    >
 
-                    <label class="form-check-label" for="availableOnly">
+                    <label
+                      class="form-check-label"
+                      for="availableOnly"
+                    >
                       Show available items only
                     </label>
                   </div>
@@ -304,7 +347,7 @@
 
                 <span class="small text-secondary">
                   {{ filteredMenuItems.length }}
-                  {{ filteredMenuItems.length === 1 ? "item" : "items" }}
+                  {{ filteredMenuItems.length === 1 ? 'item' : 'items' }}
                   displayed
                 </span>
               </div>
@@ -318,7 +361,10 @@
               No menu items match the selected filters.
             </div>
 
-            <div v-else class="row g-4">
+            <div
+              v-else
+              class="row g-4"
+            >
               <div
                 v-for="item in filteredMenuItems"
                 :key="item.id"
@@ -327,11 +373,14 @@
                 <article
                   class="card menu-card h-100"
                   :class="{
-                    'menu-card-unavailable': !item.available,
+                    'menu-card-unavailable': !item.available
                   }"
                 >
                   <div class="card-body d-flex gap-3 p-4">
-                    <div class="menu-emoji flex-shrink-0" aria-hidden="true">
+                    <div
+                      class="menu-emoji flex-shrink-0"
+                      aria-hidden="true"
+                    >
                       {{ item.emoji }}
                     </div>
 
@@ -399,7 +448,11 @@
         </div>
       </section>
 
-      <section v-show="page === 'request'" class="row g-4 align-items-start">
+
+      <section
+        v-show="page === 'request'"
+        class="row g-4 align-items-start"
+      >
         <div class="col-12 col-lg-8">
           <div class="card page-card shadow-sm border-0">
             <div class="card-body p-4 p-lg-5">
@@ -412,18 +465,30 @@
               </h2>
 
               <p class="text-secondary">
-                The form is visible, but it does not currently save data or
-                update Staff View.
+                The form is visible, but it does not currently
+                save data or update Staff View.
               </p>
 
-              <form class="row g-3 mt-2" @submit.prevent>
+              <form
+                class="row g-3 mt-2"
+                @submit.prevent
+              >
                 <div class="col-12 col-md-6">
-                  <label for="requestType" class="form-label fw-bold">
+                  <label
+                    for="requestType"
+                    class="form-label fw-bold"
+                  >
                     Request type
                   </label>
 
-                  <select id="requestType" class="form-select" required>
-                    <option value="">Select a request type</option>
+                  <select
+                    id="requestType"
+                    class="form-select"
+                    required
+                  >
+                    <option value="">
+                      Select a request type
+                    </option>
 
                     <option>Collection order</option>
                     <option>General enquiry</option>
@@ -431,7 +496,10 @@
                 </div>
 
                 <div class="col-12 col-md-6">
-                  <label for="customerName" class="form-label fw-bold">
+                  <label
+                    for="customerName"
+                    class="form-label fw-bold"
+                  >
                     Your name
                   </label>
 
@@ -441,11 +509,14 @@
                     type="text"
                     placeholder="For example, Luis"
                     required
-                  />
+                  >
                 </div>
 
                 <div class="col-12">
-                  <label for="customerContact" class="form-label fw-bold">
+                  <label
+                    for="customerContact"
+                    class="form-label fw-bold"
+                  >
                     Email or phone
                   </label>
 
@@ -455,11 +526,14 @@
                     type="text"
                     placeholder="For example, user@email.com"
                     required
-                  />
+                  >
                 </div>
 
                 <div class="col-12 col-md-8">
-                  <label for="requestedItem" class="form-label fw-bold">
+                  <label
+                    for="requestedItem"
+                    class="form-label fw-bold"
+                  >
                     Menu item
                   </label>
 
@@ -469,7 +543,9 @@
                     class="form-select"
                     required
                   >
-                    <option value="">Select an item</option>
+                    <option value="">
+                      Select an item
+                    </option>
 
                     <option
                       v-for="item in availableMenuItems"
@@ -482,15 +558,25 @@
                 </div>
 
                 <div class="col-12 col-md-4">
-                  <label for="collectionTime" class="form-label fw-bold">
+                  <label
+                    for="collectionTime"
+                    class="form-label fw-bold"
+                  >
                     Collection time
                   </label>
 
-                  <input id="collectionTime" class="form-control" type="time" />
+                  <input
+                    id="collectionTime"
+                    class="form-control"
+                    type="time"
+                  >
                 </div>
 
                 <div class="col-12">
-                  <label for="customerMessage" class="form-label fw-bold">
+                  <label
+                    for="customerMessage"
+                    class="form-label fw-bold"
+                  >
                     Dietary note, message or question
                   </label>
 
@@ -504,7 +590,10 @@
                 </div>
 
                 <div class="col-12">
-                  <button class="btn btn-greenbite" type="submit">
+                  <button
+                    class="btn btn-greenbite"
+                    type="submit"
+                  >
                     Submit request preview
                   </button>
                 </div>
@@ -516,19 +605,25 @@
         <div class="col-12 col-lg-4">
           <aside class="card confirmation-card shadow-sm border-0">
             <div class="card-body p-4">
-              <h3 class="h5 fw-bold">Confirmation preview</h3>
+              <h3 class="h5 fw-bold">
+                Confirmation preview
+              </h3>
 
               <p class="text-secondary">
                 A later exercise will display a dynamic confirmation here.
               </p>
 
-              <div class="alert alert-warning mb-0" role="alert">
+              <div
+                class="alert alert-warning mb-0"
+                role="alert"
+              >
                 This form does not yet add requests to Staff View.
               </div>
             </div>
           </aside>
         </div>
       </section>
+
 
       <section v-show="page === 'staff'">
         <div class="card page-card staff-page shadow-sm border-0">
@@ -537,11 +632,13 @@
               Static staff request view
             </span>
 
-            <h2 class="display-6 fw-bold">Customer orders and enquiries</h2>
+            <h2 class="display-6 fw-bold">
+              Customer orders and enquiries
+            </h2>
 
             <p class="text-secondary">
-              These example requests are currently written directly in the
-              template.
+              These example requests are currently written directly
+              in the template.
             </p>
 
             <div class="row g-4 mt-1">
@@ -549,21 +646,31 @@
                 <article class="card request-card h-100 shadow-sm">
                   <div class="card-body">
                     <div class="d-flex justify-content-between gap-3 mb-3">
-                      <h3 class="h5 fw-bold mb-0">Maria</h3>
+                      <h3 class="h5 fw-bold mb-0">
+                        Maria
+                      </h3>
                     </div>
 
-                    <p><strong>Reference:</strong> 101</p>
+                    <p>
+                      <strong>Reference:</strong> 101
+                    </p>
 
-                    <p><strong>Request type:</strong> Order</p>
+                    <p>
+                      <strong>Request type:</strong> Order
+                    </p>
 
-                    <p><strong>Contact:</strong> maria@example.com</p>
+                    <p>
+                      <strong>Contact:</strong> maria@example.com
+                    </p>
 
                     <p>
                       <strong>Item:</strong>
                       Gluten-Free Margherita Pizza
                     </p>
 
-                    <p><strong>Preferred time:</strong> 12:30</p>
+                    <p>
+                      <strong>Preferred time:</strong> 12:30
+                    </p>
 
                     <p class="mb-0">
                       <strong>Message:</strong>
@@ -577,18 +684,30 @@
                 <article class="card request-card h-100 shadow-sm">
                   <div class="card-body">
                     <div class="d-flex justify-content-between gap-3 mb-3">
-                      <h3 class="h5 fw-bold mb-0">Ahmed</h3>
+                      <h3 class="h5 fw-bold mb-0">
+                        Ahmed
+                      </h3>
                     </div>
 
-                    <p><strong>Reference:</strong> 102</p>
+                    <p>
+                      <strong>Reference:</strong> 102
+                    </p>
 
-                    <p><strong>Request type:</strong> Enquiry</p>
+                    <p>
+                      <strong>Request type:</strong> Enquiry
+                    </p>
 
-                    <p><strong>Contact:</strong> 07123 456789</p>
+                    <p>
+                      <strong>Contact:</strong> 07123 456789
+                    </p>
 
-                    <p><strong>Item:</strong> Iced Latte</p>
+                    <p>
+                      <strong>Item:</strong> Iced Latte
+                    </p>
 
-                    <p><strong>Preferred time:</strong> Not specified</p>
+                    <p>
+                      <strong>Preferred time:</strong> Not specified
+                    </p>
 
                     <p class="mb-0">
                       <strong>Message:</strong>
@@ -614,7 +733,8 @@
             </h2>
 
             <p class="text-secondary">
-              Vue and Express run as separate applications on different ports.
+              Vue and Express run as separate applications
+              on different ports.
             </p>
 
             <div class="row g-3 my-4">
@@ -671,7 +791,9 @@
               <div class="col-12 col-md-4">
                 <div class="card note-card h-100">
                   <div class="card-body">
-                    <h3 class="h5 fw-bold">Current state</h3>
+                    <h3 class="h5 fw-bold">
+                      Current state
+                    </h3>
 
                     <p class="text-secondary mb-0">
                       Vue loads menu information from Express.
@@ -683,7 +805,9 @@
               <div class="col-12 col-md-4">
                 <div class="card note-card h-100">
                   <div class="card-body">
-                    <h3 class="h5 fw-bold">Server data</h3>
+                    <h3 class="h5 fw-bold">
+                      Server data
+                    </h3>
 
                     <p class="text-secondary mb-0">
                       Menu and featured-item data come from API routes.
@@ -695,7 +819,9 @@
               <div class="col-12 col-md-4">
                 <div class="card note-card h-100">
                   <div class="card-body">
-                    <h3 class="h5 fw-bold">Next step</h3>
+                    <h3 class="h5 fw-bold">
+                      Next step
+                    </h3>
 
                     <p class="text-secondary mb-0">
                       Express can receive and persist customer requests.
@@ -709,137 +835,168 @@
       </section>
     </main>
   </div>
+
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref } from 'vue'
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3000";
+  import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000'
 
-const page = ref("home");
+const page = ref('home')
 
-const siteDetails = ref(null);
-const menuItems = ref([]);
-const featuredItem = ref(null);
-const loadError = ref(null);
+const siteDetails = ref(null)
+const menuItems = ref([])
+const featuredItem = ref(null)
+const loadError = ref(null)
 
-const searchTerm = ref("");
-const selectedCategory = ref("");
-const selectedDietaryTag = ref("");
-const availableOnly = ref(false);
-const selectedMenuItemId = ref("");
+const searchTerm = ref('')
+const selectedCategory = ref('')
+const selectedDietaryTag = ref('')
+const availableOnly = ref(false)
+const selectedMenuItemId = ref('')
 
 const categories = computed(() => {
   return [
-    ...new Set(menuItems.value.map((item) => item.category).filter(Boolean)),
-  ].sort();
-});
+    ...new Set(
+      menuItems.value
+        .map((item) => item.category)
+        .filter(Boolean)
+    )
+  ].sort()
+})
 
 const dietaryTags = computed(() => {
   return [
     ...new Set(
       menuItems.value.flatMap((item) => {
-        return item.dietaryTags ?? [];
-      }),
-    ),
-  ].sort();
-});
+        return item.dietaryTags ?? []
+      })
+    )
+  ].sort()
+})
 
 const filteredMenuItems = computed(() => {
-  const normalisedSearch = searchTerm.value.trim().toLowerCase();
+  const normalisedSearch = searchTerm.value
+    .trim()
+    .toLowerCase()
 
   return menuItems.value.filter((item) => {
-    const itemTags = item.dietaryTags ?? [];
+    const itemTags = item.dietaryTags ?? []
 
-    const name = item.name?.toLowerCase() ?? "";
-    const description = item.description?.toLowerCase() ?? "";
-    const category = item.category?.toLowerCase() ?? "";
+    const name = item.name?.toLowerCase() ?? ''
+    const description =
+      item.description?.toLowerCase() ?? ''
+    const category =
+      item.category?.toLowerCase() ?? ''
 
     const matchesSearch =
-      normalisedSearch === "" ||
+      normalisedSearch === '' ||
       name.includes(normalisedSearch) ||
       description.includes(normalisedSearch) ||
       category.includes(normalisedSearch) ||
       itemTags.some((tag) => {
-        return tag.toLowerCase().includes(normalisedSearch);
-      });
+        return tag
+          .toLowerCase()
+          .includes(normalisedSearch)
+      })
 
     const matchesCategory =
-      selectedCategory.value === "" || item.category === selectedCategory.value;
+      selectedCategory.value === '' ||
+      item.category === selectedCategory.value
 
     const matchesDietaryTag =
-      selectedDietaryTag.value === "" ||
-      itemTags.includes(selectedDietaryTag.value);
+      selectedDietaryTag.value === '' ||
+      itemTags.includes(selectedDietaryTag.value)
 
-    const matchesAvailability = !availableOnly.value || item.available;
+    const matchesAvailability =
+      !availableOnly.value ||
+      item.available
 
     return (
       matchesSearch &&
       matchesCategory &&
       matchesDietaryTag &&
       matchesAvailability
-    );
-  });
-});
+    )
+  })
+})
 
 const availableMenuItems = computed(() => {
-  return menuItems.value.filter((item) => item.available);
-});
+  return menuItems.value.filter((item) => item.available)
+})
 
 function showPage(pageName) {
-  page.value = pageName;
-  window.scrollTo(0, 0);
+  page.value = pageName
+  window.scrollTo(0, 0)
 }
 
 function requestItem(item) {
-  selectedMenuItemId.value = String(item.id);
-  showPage("request");
+  selectedMenuItemId.value = String(item.id)
+  showPage('request')
 }
 
 function clearFilters() {
-  searchTerm.value = "";
-  selectedCategory.value = "";
-  selectedDietaryTag.value = "";
-  availableOnly.value = false;
+  searchTerm.value = ''
+  selectedCategory.value = ''
+  selectedDietaryTag.value = ''
+  availableOnly.value = false
 }
 
 function formatPrice(value) {
-  return `£${Number(value).toFixed(2)}`;
+  return `£${Number(value).toFixed(2)}`
 }
 
 async function loadApplicationData() {
-  loadError.value = null;
+  loadError.value = null
 
   try {
-    const [siteResponse, menuResponse, featuredResponse] = await Promise.all([
+    const [
+      siteResponse,
+      menuResponse,
+      featuredResponse
+    ] = await Promise.all([
       fetch(`${API_BASE_URL}/api/site-details`),
       fetch(`${API_BASE_URL}/api/menu`),
-      fetch(`${API_BASE_URL}/api/featured-item`),
-    ]);
+      fetch(`${API_BASE_URL}/api/featured-item`)
+    ])
 
-    if (!siteResponse.ok || !menuResponse.ok || !featuredResponse.ok) {
-      throw new Error("The application data could not be loaded");
+    if (
+      !siteResponse.ok ||
+      !menuResponse.ok ||
+      !featuredResponse.ok
+    ) {
+      throw new Error(
+        'The application data could not be loaded'
+      )
     }
 
-    const [siteData, menuData, featuredData] = await Promise.all([
+    const [
+      siteData,
+      menuData,
+      featuredData
+    ] = await Promise.all([
       siteResponse.json(),
       menuResponse.json(),
-      featuredResponse.json(),
-    ]);
+      featuredResponse.json()
+    ])
 
-    siteDetails.value = siteData;
-    menuItems.value = menuData;
-    featuredItem.value = featuredData;
+    siteDetails.value = siteData
+    menuItems.value = menuData
+    featuredItem.value = featuredData
   } catch (error) {
-    console.error("Unable to load application data:", error);
+    console.error(
+      'Unable to load application data:',
+      error
+    )
 
     loadError.value =
-      "Something went wrong loading the site. Please check the server is running and try again.";
+      'Something went wrong loading the site. Please check the server is running and try again.'
   }
 }
 
 onMounted(() => {
-  loadApplicationData();
-});
+  loadApplicationData()
+})
 </script>
