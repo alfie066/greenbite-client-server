@@ -413,13 +413,6 @@
                         >
                           {{ tag }}
                         </span>
-
-                        <span
-                          v-if="!item.available"
-                          class="badge unavailable-badge"
-                        >
-                          Unavailable
-                        </span>
                       </div>
 
                       <button

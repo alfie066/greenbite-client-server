@@ -13,7 +13,7 @@ const siteDetails = {
   tagline: 'Fresh food near campus',
 
   home: {
-    label: 'Placeholder Bistro customer application',
+    label: 'Placeholder Bistro customer home page',
     heading:
       'Fresh lunches, drinks and allergy-aware options in one simple web application.',
     introduction:
@@ -98,7 +98,7 @@ const menuItems = [
 
 const featuredItemId = 2
 
-// Populated once customer requests can be submitted and persisted.
+// This will be populated in the future if it works
 const requests = []
 
 app.get('/api/site-details', (request, response) => {
@@ -139,15 +139,13 @@ app.get('/api/requests', (request, response) => {
   response.json(requestsWithMenuItems)
 })
 
-// Catches requests to routes that don't exist.
 app.use((request, response) => {
   response.status(404).json({
     message: 'Route not found'
   })
 })
 
-// Catches any error thrown or passed to next() in a route above,
-// so a bug in one request can't crash the whole server unhandled.
+
 app.use((error, request, response, next) => {
   console.error(error)
 

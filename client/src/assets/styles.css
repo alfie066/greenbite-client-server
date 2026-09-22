@@ -183,6 +183,14 @@ header.sticky-top {
   color: white !important;
 }
 
+.btn.btn-secondary {
+  padding: 0.7rem 1.1rem;
+  border: 2px solid var(--green) !important;
+  border-radius: 0.65rem;
+  background: var(--paper) !important;
+  color: var(--green) !important;
+  font-weight: 800;
+}
 
 .card.info-card {
   border: 1px solid var(--line);
@@ -228,7 +236,7 @@ header.sticky-top {
   display: block;
   width: 11rem;
   padding: 0.5rem;
-  background: var(--tomato) !important;
+  background: var(--mustard) !important;
   color: var(--ink) !important;
   font-size: 0.72rem;
   font-weight: 900;
