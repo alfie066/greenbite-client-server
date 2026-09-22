@@ -101,7 +101,7 @@
       </nav>
     </header>
 
-    <main class="container-xl py-4 py-lg-5">
+    <main class="container-fluid px-3 px-lg-5 py-4 py-lg-5" style="max-width: 1600px; margin: 0 auto;">
       <section
         v-show="page === 'home'"
         class="row g-4 align-items-center home-section"
@@ -182,7 +182,10 @@
           </div>
         </div>
 
+
         <div class="col-12 col-lg-5">
+          <img :src="bistroImage" alt="Placeholder Bistro Interior" class="bistro-img" />
+
           <article
             v-if="featuredItem"
             class="card featured-card text-center"
@@ -196,7 +199,11 @@
                 class="featured-plate mx-auto mb-4"
                 aria-hidden="true"
               >
-                {{ featuredItem.emoji }}
+                <img 
+                  :src="featuredItem.image" 
+                  :alt="featuredItem.name" 
+                  class="featured-img" 
+                />
               </div>
 
               <p class="small fw-bold text-uppercase text-secondary mb-2">
@@ -377,11 +384,13 @@
                   }"
                 >
                   <div class="card-body d-flex gap-3 p-4">
-                    <div
-                      class="menu-emoji flex-shrink-0"
-                      aria-hidden="true"
-                    >
-                      {{ item.emoji }}
+                    <div class="menu-media flex-shrink-0">
+                      <img 
+                        v-if="item.image" 
+                        :src="item.image" 
+                        :alt="item.name" 
+                        class="menu-item-img" 
+                      />
                     </div>
 
                     <div class="flex-grow-1">
@@ -607,11 +616,14 @@
               </p>
 
               <div
-                class="alert alert-warning mb-0"
+                class="alert alert-warning mb-5"
                 role="alert"
               >
                 This form does not yet add requests to Staff View.
               </div>
+
+              <img :src="ordersImage" alt="Orders image" class="bistro-img" />
+
             </div>
           </aside>
         </div>
@@ -833,6 +845,9 @@
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
+import bistroImage from '@/assets/bistro.jpg'
+import ordersImage from '@/assets/orders.jpg'
+
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000'

@@ -4,6 +4,10 @@ const cors = require('cors')
 const app = express()
 const PORT = 3000
 
+const path = require('path');
+
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
 app.use(cors())
 app.use(express.json())
 
@@ -34,7 +38,7 @@ const menuItems = [
     description:
       'Tomato, mozzarella and basil on a gluten-free base.',
     price: 7.5,
-    emoji: '🍕',
+    image: 'http://localhost:3000/images/Gluten-Free Margherita Pizza.jpg',
     category: 'Pizza',
     dietaryTags: ['gluten-free', 'vegetarian'],
     available: true
@@ -45,7 +49,7 @@ const menuItems = [
     description:
       'Toasted panini with chicken, pesto and mozzarella.',
     price: 5.8,
-    emoji: '🥪',
+    image: 'http://localhost:3000/images/Chicken Pesto Panini.jpg',
     category: 'Savoury',
     dietaryTags: [],
     available: true
@@ -56,7 +60,7 @@ const menuItems = [
     description:
       'Cold espresso with milk served over ice.',
     price: 3.2,
-    emoji: '🥤',
+    image: 'http://localhost:3000/images/Iced Latte.jpg',
     category: 'Drinks',
     dietaryTags: ['vegetarian'],
     available: true
@@ -67,18 +71,18 @@ const menuItems = [
     description:
       'Rich chocolate brownie made without dairy ingredients.',
     price: 3.6,
-    emoji: '🍫',
+    image: 'http://localhost:3000/images/Vegan Chocolate Brownie.jpg',
     category: 'Sweets',
     dietaryTags: ['vegan', 'dairy-free'],
     available: true
   },
   {
     id: 5,
-    name: 'Placeholder Halloumi Burger',
+    name: 'Halloumi Burger',
     description:
       'Grilled halloumi, salad, tomato relish and toasted bun.',
     price: 8.4,
-    emoji: '🍔',
+    image: 'http://localhost:3000/images/Halloumi Burger.jpg',
     category: 'Burgers',
     dietaryTags: ['vegetarian'],
     available: false
@@ -89,7 +93,7 @@ const menuItems = [
     description:
       'Chickpeas, roasted vegetables, herbs and lemon dressing.',
     price: 6.2,
-    emoji: '🥗',
+    image: 'http://localhost:3000/images/Moroccan Chickpea Salad.jpg',
     category: 'Savoury',
     dietaryTags: ['vegan', 'gluten-free'],
     available: true
