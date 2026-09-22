@@ -102,8 +102,6 @@
     </header>
 
     <main class="container-xl py-4 py-lg-5">
-      <!-- Home page -->
-
       <section
         v-show="page === 'home'"
         class="row g-4 align-items-center home-section"
@@ -229,7 +227,6 @@
         </div>
       </section>
 
-      <!-- Menu page -->
 
       <section v-show="page === 'menu'">
         <div class="card page-card shadow-sm border-0">
@@ -451,7 +448,6 @@
         </div>
       </section>
 
-      <!-- Order or Enquiry page -->
 
       <section
         v-show="page === 'request'"
@@ -628,7 +624,6 @@
         </div>
       </section>
 
-      <!-- Staff page -->
 
       <section v-show="page === 'staff'">
         <div class="card page-card staff-page shadow-sm border-0">
@@ -725,8 +720,6 @@
           </div>
         </div>
       </section>
-
-      <!-- Networking page -->
 
       <section v-show="page === 'network'">
         <div class="card page-card shadow-sm border-0">
@@ -843,46 +836,11 @@
     </main>
   </div>
 
-  <div
-    v-else
-    class="container py-5 text-center"
-  >
-    <template v-if="loadError">
-      <div
-        class="alert alert-danger"
-        role="alert"
-      >
-        {{ loadError }}
-      </div>
-
-      <button
-        class="btn btn-outline-danger btn-sm"
-        type="button"
-        @click="loadApplicationData"
-      >
-        Try again
-      </button>
-    </template>
-
-    <template v-else>
-      <div
-        class="spinner-border"
-        role="status"
-        aria-label="Loading application"
-      ></div>
-
-      <p class="mt-3 text-secondary">
-        Loading application...
-      </p>
-    </template>
-  </div>
 </template>
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 
-// Falls back to localhost for local development; set VITE_API_BASE_URL
-// in a .env file when deploying against a different server.
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000'
 

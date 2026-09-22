@@ -96,7 +96,7 @@ const menuItems = [
   }
 ]
 
-const featuredItemId = 1
+const featuredItemId = 2
 
 // Populated once customer requests can be submitted and persisted.
 const requests = []
