@@ -485,6 +485,7 @@
 
                   <select
                     id="requestType"
+                    v-model="requestType"
                     class="form-select"
                     required
                   >
@@ -507,6 +508,7 @@
 
                   <input
                     id="customerName"
+                    v-model="customerName"
                     class="form-control"
                     type="text"
                     placeholder="For example, Luis"
@@ -524,6 +526,7 @@
 
                   <input
                     id="customerContact"
+                    v-model="customerContact"
                     class="form-control"
                     type="text"
                     placeholder="For example, user@email.com"
@@ -569,6 +572,7 @@
 
                   <input
                     id="collectionTime"
+                    v-model="collectionTime"
                     class="form-control"
                     type="time"
                   >
@@ -584,6 +588,7 @@
 
                   <textarea
                     id="customerMessage"
+                    v-model="customerMessage"
                     class="form-control"
                     rows="4"
                     maxlength="300"
@@ -595,8 +600,9 @@
                   <button
                     class="btn btn-greenbite"
                     type="submit"
+                    @click.prevent="orderItem"
                   >
-                    Submit request preview
+                    Submit request
                   </button>
                 </div>
               </form>
@@ -863,7 +869,13 @@ const searchTerm = ref('')
 const selectedCategory = ref('')
 const selectedDietaryTag = ref('')
 const availableOnly = ref(false)
+const requestType = ref('')
+const customerName = ref('')
 const selectedMenuItemId = ref('')
+const customerContact = ref('')
+const collectionTime = ref('')
+const customerMessage = ref('')
+
 
 const categories = computed(() => {
   return [
@@ -943,6 +955,45 @@ function showPage(pageName) {
 function requestItem(item) {
   selectedMenuItemId.value = String(item.id)
   showPage('request')
+}
+
+function orderItem() {
+  if (!selectedMenuItemId.value) {
+    alert('Please select a menu item first')
+    return
+  }
+
+  const orderData = {
+    requestType: requestType.value,
+    customerName: customerName.value,
+    menuItemId: Number(selectedMenuItemId.value),
+    customerContact: customerContact.value,
+    collectionTime: collectionTime.value,
+    customerMessage: customerMessage.value
+  }
+
+  fetch('http://localhost:3000/api/requests', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(orderData)
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      alert('Request submitted successfully!')
+      
+      // Clear form inputs
+      requestType.value = ''
+      customerName.value = ''
+      selectedMenuItemId.value = ''
+      customerContact.value = ''
+      collectionTime.value = ''
+      customerMessage.value = ''
+    })
+    .catch((error) => {
+      console.error('Error submitting request:', error)
+    })
 }
 
 function clearFilters() {

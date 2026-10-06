@@ -102,7 +102,6 @@ const menuItems = [
 
 const featuredItemId = 2
 
-// This will be populated in the future if it works
 const requests = []
 
 app.get('/api/site-details', (request, response) => {
@@ -141,6 +140,37 @@ app.get('/api/requests', (request, response) => {
   })
 
   response.json(requestsWithMenuItems)
+})
+
+app.post('/api/requests', (request, response) => {
+  const {
+    requestType,
+    customerName,
+    menuItemId,
+    customerContact,
+    collectionTime,
+    customerMessage
+  } = request.body
+
+  const newRequest = {
+    id: requests.length + 1,
+    requestType: requestType || '',
+    customerName: customerName || '',
+    menuItemId: Number(menuItemId),
+    customerContact: customerContact || '',
+    collectionTime: collectionTime || '',
+    customerMessage: customerMessage || '',
+    createdAt: new Date().toISOString()
+  }
+
+  requests.push(newRequest)
+
+  console.log('New request added:', newRequest)
+
+  response.status(201).json({
+    message: 'Request saved successfully!',
+    request: newRequest
+  })
 })
 
 app.use((request, response) => {
