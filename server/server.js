@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+const fs = require('fs')
 
 const app = express()
 const PORT = 3000
@@ -100,9 +101,11 @@ const menuItems = [
   }
 ]
 
+const DATA_FILE = path.join(__dirname, 'requests.json')
+
 const featuredItemId = 2
 
-const requests = []
+let requests = loadRequests()
 
 app.get('/api/site-details', (request, response) => {
   response.json(siteDetails)
@@ -165,6 +168,8 @@ app.post('/api/requests', (request, response) => {
 
   requests.push(newRequest)
 
+  saveRequests(requests)
+
   response.status(201).json({
     message: 'Request saved successfully!',
     request: newRequest
@@ -191,3 +196,23 @@ app.listen(PORT, () => {
     `Placeholder Bistro server running on http://localhost:${PORT}`
   )
 })
+
+function loadRequests() {
+  try {
+    if (fs.existsSync(DATA_FILE)) {
+      const fileContent = fs.readFileSync(DATA_FILE, 'utf8')
+      return JSON.parse(fileContent)
+    }
+  } catch (error) {
+    console.error('Error reading requests.json:', error)
+  }
+  return []
+}
+
+function saveRequests(data) {
+  try {
+    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf8')
+  } catch (error) {
+    console.error('Error writing to requests.json:', error)
+  }
+}
