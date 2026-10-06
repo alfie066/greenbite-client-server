@@ -648,86 +648,55 @@
             </h2>
 
             <p class="text-secondary">
-              These example requests are currently written directly
-              in the template.
+              Live customer requests fetched from the server.
             </p>
 
-            <div class="row g-4 mt-1">
-              <div class="col-12 col-lg-6">
-                <article class="card request-card h-100 shadow-sm">
+            <div v-if="requests.length === 0" class="text-muted mt-3 mb-0">
+              No requests or orders found.
+            </div>
+
+            <div v-else class="row g-4 mt-1">
+              <div 
+                v-for="request in requests" 
+                :key="request.id" 
+                class="col-12 col-lg-6"
+              >
+              <article class="card request-card h-100 shadow-sm">
                   <div class="card-body">
                     <div class="d-flex justify-content-between gap-3 mb-3">
                       <h3 class="h5 fw-bold mb-0">
-                        Maria
+                        {{ request.customerName || 'Anonymous' }}
                       </h3>
                     </div>
 
                     <p>
-                      <strong>Reference:</strong> 101
+                      <strong>Reference:</strong> {{ request.id }}
                     </p>
 
                     <p>
-                      <strong>Request type:</strong> Order
+                      <strong>Request type:</strong> {{ request.requestType || 'N/A' }}
                     </p>
 
                     <p>
-                      <strong>Contact:</strong> maria@example.com
+                      <strong>Contact:</strong> {{ request.customerContact || 'N/A' }}
                     </p>
 
                     <p>
-                      <strong>Item:</strong>
-                      Gluten-Free Margherita Pizza
+                      <strong>Item:</strong> {{ request.menuItemName || 'N/A' }}
                     </p>
 
                     <p>
-                      <strong>Preferred time:</strong> 12:30
+                      <strong>Preferred time:</strong> {{ request.collectionTime || 'Not specified' }}
                     </p>
 
                     <p class="mb-0">
-                      <strong>Message:</strong>
-                      Please keep one available if possible.
-                    </p>
-                  </div>
-                </article>
-              </div>
-
-              <div class="col-12 col-lg-6">
-                <article class="card request-card h-100 shadow-sm">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between gap-3 mb-3">
-                      <h3 class="h5 fw-bold mb-0">
-                        Ahmed
-                      </h3>
-                    </div>
-
-                    <p>
-                      <strong>Reference:</strong> 102
-                    </p>
-
-                    <p>
-                      <strong>Request type:</strong> Enquiry
-                    </p>
-
-                    <p>
-                      <strong>Contact:</strong> 07123 456789
-                    </p>
-
-                    <p>
-                      <strong>Item:</strong> Iced Latte
-                    </p>
-
-                    <p>
-                      <strong>Preferred time:</strong> Not specified
-                    </p>
-
-                    <p class="mb-0">
-                      <strong>Message:</strong>
-                      Can this be made with oat milk?
+                      <strong>Message:</strong> {{ request.customerMessage || 'None' }}
                     </p>
                   </div>
                 </article>
               </div>
             </div>
+
           </div>
         </div>
       </section>
