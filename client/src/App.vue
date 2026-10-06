@@ -640,7 +640,7 @@
         <div class="card page-card staff-page shadow-sm border-0">
           <div class="card-body p-4 p-lg-5">
             <span class="badge staff-label mb-3">
-              Static staff request view
+              Staff request view
             </span>
 
             <h2 class="display-6 fw-bold">
@@ -648,86 +648,57 @@
             </h2>
 
             <p class="text-secondary">
-              These example requests are currently written directly
-              in the template.
+              Live customer requests fetched from the server.
             </p>
 
-            <div class="row g-4 mt-1">
-              <div class="col-12 col-lg-6">
+            <!-- Message if no requests exist -->
+            <div v-if="requests.length === 0" class="text-muted mt-3 mb-0">
+              No requests or orders found.
+            </div>
+
+            <!-- Grid displaying requests dynamically -->
+            <div v-else class="row g-4 mt-1">
+              <div 
+                v-for="request in requests" 
+                :key="request.id" 
+                class="col-12 col-lg-6"
+              >
                 <article class="card request-card h-100 shadow-sm">
                   <div class="card-body">
                     <div class="d-flex justify-content-between gap-3 mb-3">
                       <h3 class="h5 fw-bold mb-0">
-                        Maria
+                        {{ request.customerName || 'Anonymous' }}
                       </h3>
                     </div>
 
                     <p>
-                      <strong>Reference:</strong> 101
+                      <strong>Reference:</strong> {{ request.id }}
                     </p>
 
                     <p>
-                      <strong>Request type:</strong> Order
+                      <strong>Request type:</strong> {{ request.requestType || 'N/A' }}
                     </p>
 
                     <p>
-                      <strong>Contact:</strong> maria@example.com
+                      <strong>Contact:</strong> {{ request.customerContact || 'N/A' }}
                     </p>
 
                     <p>
-                      <strong>Item:</strong>
-                      Gluten-Free Margherita Pizza
+                      <strong>Item:</strong> {{ request.menuItemName || 'N/A' }}
                     </p>
 
                     <p>
-                      <strong>Preferred time:</strong> 12:30
+                      <strong>Preferred time:</strong> {{ request.collectionTime || 'Not specified' }}
                     </p>
 
                     <p class="mb-0">
-                      <strong>Message:</strong>
-                      Please keep one available if possible.
-                    </p>
-                  </div>
-                </article>
-              </div>
-
-              <div class="col-12 col-lg-6">
-                <article class="card request-card h-100 shadow-sm">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between gap-3 mb-3">
-                      <h3 class="h5 fw-bold mb-0">
-                        Ahmed
-                      </h3>
-                    </div>
-
-                    <p>
-                      <strong>Reference:</strong> 102
-                    </p>
-
-                    <p>
-                      <strong>Request type:</strong> Enquiry
-                    </p>
-
-                    <p>
-                      <strong>Contact:</strong> 07123 456789
-                    </p>
-
-                    <p>
-                      <strong>Item:</strong> Iced Latte
-                    </p>
-
-                    <p>
-                      <strong>Preferred time:</strong> Not specified
-                    </p>
-
-                    <p class="mb-0">
-                      <strong>Message:</strong>
-                      Can this be made with oat milk?
+                      <strong>Message:</strong> {{ request.customerMessage || 'None' }}
                     </p>
                   </div>
                 </article>
               </div>
             </div>
+
           </div>
         </div>
       </section>
@@ -865,6 +836,8 @@ const menuItems = ref([])
 const featuredItem = ref(null)
 const loadError = ref(null)
 
+const requests = ref([])
+
 const searchTerm = ref('')
 const selectedCategory = ref('')
 const selectedDietaryTag = ref('')
@@ -949,6 +922,9 @@ const availableMenuItems = computed(() => {
 
 function showPage(pageName) {
   page.value = pageName
+    if (page.value === 'staff') {
+      fetchRequests()
+    }
   window.scrollTo(0, 0)
 }
 
@@ -983,7 +959,6 @@ function orderItem() {
     .then((data) => {
       alert('Request submitted successfully!')
       
-      // Clear form inputs
       requestType.value = ''
       customerName.value = ''
       selectedMenuItemId.value = ''
@@ -993,6 +968,17 @@ function orderItem() {
     })
     .catch((error) => {
       console.error('Error submitting request:', error)
+    })
+}
+
+function fetchRequests() {
+  fetch('http://localhost:3000/api/requests')
+    .then((response) => response.json())
+    .then((data) => {
+      requests.value = data
+    })
+    .catch((error) => {
+      console.error('Error fetching requests:', error)
     })
 }
 
