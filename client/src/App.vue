@@ -651,9 +651,9 @@
               Live customer requests fetched from the server.
             </p>
 
-            <div v-if="requests.length === 0" class="text-muted mt-3 mb-0">
+            <p v-if="requests.length === 0" class="text-muted mt-3 mb-0">
               No requests or orders found.
-            </div>
+            </p>
 
             <div v-else class="row g-4 mt-1">
               <div 
@@ -661,7 +661,7 @@
                 :key="request.id" 
                 class="col-12 col-lg-6"
               >
-              <article class="card request-card h-100 shadow-sm">
+                <article class="card request-card h-100 shadow-sm">
                   <div class="card-body">
                     <div class="d-flex justify-content-between gap-3 mb-3">
                       <h3 class="h5 fw-bold mb-0">
@@ -833,6 +833,8 @@ const siteDetails = ref(null)
 const menuItems = ref([])
 const featuredItem = ref(null)
 const loadError = ref(null)
+
+const requests = ref([])
 
 const searchTerm = ref('')
 const selectedCategory = ref('')
