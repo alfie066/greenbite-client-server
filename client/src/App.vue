@@ -640,7 +640,7 @@
         <div class="card page-card staff-page shadow-sm border-0">
           <div class="card-body p-4 p-lg-5">
             <span class="badge staff-label mb-3">
-              Static staff request view
+              Staff request view
             </span>
 
             <h2 class="display-6 fw-bold">
@@ -920,6 +920,9 @@ const availableMenuItems = computed(() => {
 
 function showPage(pageName) {
   page.value = pageName
+    if (page.value === 'staff') {
+      fetchRequests()
+    }
   window.scrollTo(0, 0)
 }
 
@@ -954,7 +957,6 @@ function orderItem() {
     .then((data) => {
       alert('Request submitted successfully!')
       
-      // Clear form inputs
       requestType.value = ''
       customerName.value = ''
       selectedMenuItemId.value = ''
@@ -964,6 +966,17 @@ function orderItem() {
     })
     .catch((error) => {
       console.error('Error submitting request:', error)
+    })
+}
+
+function fetchRequests() {
+  fetch('http://localhost:3000/api/requests')
+    .then((response) => response.json())
+    .then((data) => {
+      requests.value = data
+    })
+    .catch((error) => {
+      console.error('Error fetching requests:', error)
     })
 }
 

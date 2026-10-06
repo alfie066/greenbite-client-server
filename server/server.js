@@ -165,8 +165,6 @@ app.post('/api/requests', (request, response) => {
 
   requests.push(newRequest)
 
-  console.log('New request added:', newRequest)
-
   response.status(201).json({
     message: 'Request saved successfully!',
     request: newRequest
