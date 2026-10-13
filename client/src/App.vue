@@ -101,7 +101,7 @@
       </nav>
     </header>
 
-    <main class="container-fluid px-3 px-lg-5 py-4 py-lg-5" style="max-width: 1600px; margin: 0 auto;">
+    <div class="container-fluid px-3 px-lg-5 py-4 py-lg-5" style="max-width: 1600px; margin: 0 auto;">
       <section
         v-show="page === 'home'"
         class="row g-4 align-items-center home-section"
@@ -144,7 +144,6 @@
                   <strong class="d-block mb-1">
                     Opening hours
                   </strong>
-
                   <small class="text-secondary">
                     {{ siteDetails.businessInformation.openingHours }}
                   </small>
@@ -158,7 +157,6 @@
                   <strong class="d-block mb-1">
                     Location
                   </strong>
-
                   <small class="text-secondary">
                     {{ siteDetails.businessInformation.location }}
                   </small>
@@ -172,7 +170,6 @@
                   <strong class="d-block mb-1">
                     Contact
                   </strong>
-
                   <small class="text-secondary">
                     {{ siteDetails.businessInformation.contact }}
                   </small>
@@ -182,23 +179,16 @@
           </div>
         </div>
 
-
         <div class="col-12 col-lg-5">
-          <img :src="bistroImage" alt="Placeholder Bistro Interior" class="bistro-img" />
+          <img :src="bistroImage" alt="Placeholder Bistro Interior" class="bistro-img img-fluid w-100 mb-3" />
 
-          <article
-            v-if="featuredItem"
-            class="card featured-card text-center"
-          >
+          <article v-if="featuredItem" class="card featured-card text-center">
             <span class="featured-ribbon">
               Chef's pick
             </span>
 
             <div class="card-body p-4 p-xl-5">
-              <div
-                class="featured-plate mx-auto mb-4"
-                aria-hidden="true"
-              >
+              <div class="featured-plate mx-auto mb-4" aria-hidden="true">
                 <img 
                   :src="featuredItem.image" 
                   :alt="featuredItem.name" 
@@ -233,6 +223,7 @@
           </article>
         </div>
       </section>
+    </div>
 
 
       <section v-show="page === 'menu'">
@@ -813,7 +804,6 @@
           </div>
         </div>
       </section>
-    </main>
   </div>
 
 </template>
