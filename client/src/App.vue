@@ -825,7 +825,7 @@ import ordersImage from '@/assets/orders.jpg'
 
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000'
+  import.meta.env.VITE_API_BASE_URL ?? ''
 
 const page = ref('home')
 
@@ -946,7 +946,7 @@ function orderItem() {
     customerMessage: customerMessage.value
   }
 
-  fetch('http://localhost:3000/api/requests', {
+  fetch('/api/requests', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -970,7 +970,7 @@ function orderItem() {
 }
 
 function fetchRequests() {
-  fetch('http://localhost:3000/api/requests')
+  fetch('/api/requests')
     .then((response) => response.json())
     .then((data) => {
       requests.value = data
