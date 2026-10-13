@@ -1,11 +1,10 @@
 const express = require('express')
 const cors = require('cors')
 const fs = require('fs')
+const path = require('path');
 
 const app = express()
-const PORT = 3000
-
-const path = require('path');
+const PORT = process.env.PORT || 3000
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
@@ -36,10 +35,9 @@ const menuItems = [
   {
     id: 1,
     name: 'Gluten-Free Margherita Pizza',
-    description:
-      'Tomato, mozzarella and basil on a gluten-free base.',
+    description: 'Tomato, mozzarella and basil on a gluten-free base.',
     price: 7.5,
-    image: 'http://localhost:3000/images/Gluten-Free Margherita Pizza.jpg',
+    image: '/images/Gluten-Free Margherita Pizza.jpg', // <--- EDIT 1: Changed to relative path
     category: 'Pizza',
     dietaryTags: ['gluten-free', 'vegetarian'],
     available: true
@@ -47,10 +45,9 @@ const menuItems = [
   {
     id: 2,
     name: 'Chicken Pesto Panini',
-    description:
-      'Toasted panini with chicken, pesto and mozzarella.',
+    description: 'Toasted panini with chicken, pesto and mozzarella.',
     price: 5.8,
-    image: 'http://localhost:3000/images/Chicken Pesto Panini.jpg',
+    image: '/images/Chicken Pesto Panini.jpg', // <--- EDIT 1
     category: 'Savoury',
     dietaryTags: [],
     available: true
@@ -58,10 +55,9 @@ const menuItems = [
   {
     id: 3,
     name: 'Iced Latte',
-    description:
-      'Cold espresso with milk served over ice.',
+    description: 'Cold espresso with milk served over ice.',
     price: 3.2,
-    image: 'http://localhost:3000/images/Iced Latte.jpg',
+    image: '/images/Iced Latte.jpg', // <--- EDIT 1
     category: 'Drinks',
     dietaryTags: ['vegetarian'],
     available: true
@@ -69,10 +65,9 @@ const menuItems = [
   {
     id: 4,
     name: 'Vegan Chocolate Brownie',
-    description:
-      'Rich chocolate brownie made without dairy ingredients.',
+    description: 'Rich chocolate brownie made without dairy ingredients.',
     price: 3.6,
-    image: 'http://localhost:3000/images/Vegan Chocolate Brownie.jpg',
+    image: '/images/Vegan Chocolate Brownie.jpg', // <--- EDIT 1
     category: 'Sweets',
     dietaryTags: ['vegan', 'dairy-free'],
     available: true
@@ -80,10 +75,9 @@ const menuItems = [
   {
     id: 5,
     name: 'Halloumi Burger',
-    description:
-      'Grilled halloumi, salad, tomato relish and toasted bun.',
+    description: 'Grilled halloumi, salad, tomato relish and toasted bun.',
     price: 8.4,
-    image: 'http://localhost:3000/images/Halloumi Burger.jpg',
+    image: '/images/Halloumi Burger.jpg', // <--- EDIT 1
     category: 'Burgers',
     dietaryTags: ['vegetarian'],
     available: false
@@ -91,10 +85,9 @@ const menuItems = [
   {
     id: 6,
     name: 'Moroccan Chickpea Salad',
-    description:
-      'Chickpeas, roasted vegetables, herbs and lemon dressing.',
+    description: 'Chickpeas, roasted vegetables, herbs and lemon dressing.',
     price: 6.2,
-    image: 'http://localhost:3000/images/Moroccan Chickpea Salad.jpg',
+    image: '/images/Moroccan Chickpea Salad.jpg', // <--- EDIT 1
     category: 'Savoury',
     dietaryTags: ['vegan', 'gluten-free'],
     available: true
@@ -102,7 +95,6 @@ const menuItems = [
 ]
 
 const DATA_FILE = path.join(__dirname, 'requests.json')
-
 const featuredItemId = 2
 
 let requests = loadRequests()
@@ -116,44 +108,26 @@ app.get('/api/menu', (request, response) => {
 })
 
 app.get('/api/featured-item', (request, response) => {
-  const featuredItem = menuItems.find(
-    (item) => item.id === featuredItemId
-  )
-
+  const featuredItem = menuItems.find((item) => item.id === featuredItemId)
   if (!featuredItem) {
-    return response.status(404).json({
-      message: 'Featured menu item not found'
-    })
+    return response.status(404).json({ message: 'Featured menu item not found' })
   }
-
   response.json(featuredItem)
 })
 
 app.get('/api/requests', (request, response) => {
   const requestsWithMenuItems = requests.map((customerRequest) => {
-    const menuItem = menuItems.find(
-      (item) => item.id === customerRequest.menuItemId
-    )
-
+    const menuItem = menuItems.find((item) => item.id === customerRequest.menuItemId)
     return {
       ...customerRequest,
-      menuItemName:
-        menuItem?.name ?? 'Menu item no longer available'
+      menuItemName: menuItem?.name ?? 'Menu item no longer available'
     }
   })
-
   response.json(requestsWithMenuItems)
 })
 
 app.post('/api/requests', (request, response) => {
-  const {
-    requestType,
-    customerName,
-    menuItemId,
-    customerContact,
-    collectionTime,
-    customerMessage
-  } = request.body
+  const { requestType, customerName, menuItemId, customerContact, collectionTime, customerMessage } = request.body
 
   const newRequest = {
     id: requests.length + 1,
@@ -167,7 +141,6 @@ app.post('/api/requests', (request, response) => {
   }
 
   requests.push(newRequest)
-
   saveRequests(requests)
 
   response.status(201).json({
@@ -176,25 +149,20 @@ app.post('/api/requests', (request, response) => {
   })
 })
 
-app.use((request, response) => {
-  response.status(404).json({
-    message: 'Route not found'
-  })
-})
 
+app.use(express.static(path.join(__dirname, '../client/dist')))
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'))
+})
 
 app.use((error, request, response, next) => {
   console.error(error)
-
-  response.status(500).json({
-    message: 'Internal server error'
-  })
+  response.status(500).json({ message: 'Internal server error' })
 })
 
-app.listen(PORT, () => {
-  console.log(
-    `Placeholder Bistro server running on http://localhost:${PORT}`
-  )
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Placeholder Bistro server running on port ${PORT}`)
 })
 
 function loadRequests() {
