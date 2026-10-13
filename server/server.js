@@ -1,12 +1,12 @@
 const express = require('express')
 const cors = require('cors')
 const fs = require('fs')
-const path = require('path');
+const path = require('path')
 
 const app = express()
 const PORT = process.env.PORT || 3000
 
-app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/images', express.static(path.join(__dirname, 'images')))
 
 app.use(cors())
 app.use(express.json())
@@ -37,7 +37,7 @@ const menuItems = [
     name: 'Gluten-Free Margherita Pizza',
     description: 'Tomato, mozzarella and basil on a gluten-free base.',
     price: 7.5,
-    image: '/images/Gluten-Free Margherita Pizza.jpg', // <--- EDIT 1: Changed to relative path
+    image: '/images/Gluten-Free Margherita Pizza.jpg',
     category: 'Pizza',
     dietaryTags: ['gluten-free', 'vegetarian'],
     available: true
@@ -47,7 +47,7 @@ const menuItems = [
     name: 'Chicken Pesto Panini',
     description: 'Toasted panini with chicken, pesto and mozzarella.',
     price: 5.8,
-    image: '/images/Chicken Pesto Panini.jpg', // <--- EDIT 1
+    image: '/images/Chicken Pesto Panini.jpg',
     category: 'Savoury',
     dietaryTags: [],
     available: true
@@ -57,7 +57,7 @@ const menuItems = [
     name: 'Iced Latte',
     description: 'Cold espresso with milk served over ice.',
     price: 3.2,
-    image: '/images/Iced Latte.jpg', // <--- EDIT 1
+    image: '/images/Iced Latte.jpg',
     category: 'Drinks',
     dietaryTags: ['vegetarian'],
     available: true
@@ -67,7 +67,7 @@ const menuItems = [
     name: 'Vegan Chocolate Brownie',
     description: 'Rich chocolate brownie made without dairy ingredients.',
     price: 3.6,
-    image: '/images/Vegan Chocolate Brownie.jpg', // <--- EDIT 1
+    image: '/images/Vegan Chocolate Brownie.jpg',
     category: 'Sweets',
     dietaryTags: ['vegan', 'dairy-free'],
     available: true
@@ -77,7 +77,7 @@ const menuItems = [
     name: 'Halloumi Burger',
     description: 'Grilled halloumi, salad, tomato relish and toasted bun.',
     price: 8.4,
-    image: '/images/Halloumi Burger.jpg', // <--- EDIT 1
+    image: '/images/Halloumi Burger.jpg',
     category: 'Burgers',
     dietaryTags: ['vegetarian'],
     available: false
@@ -87,14 +87,14 @@ const menuItems = [
     name: 'Moroccan Chickpea Salad',
     description: 'Chickpeas, roasted vegetables, herbs and lemon dressing.',
     price: 6.2,
-    image: '/images/Moroccan Chickpea Salad.jpg', // <--- EDIT 1
+    image: '/images/Moroccan Chickpea Salad.jpg',
     category: 'Savoury',
     dietaryTags: ['vegan', 'gluten-free'],
     available: true
   }
 ]
 
-const DATA_FILE = path.join(__dirname, 'requests.json')
+const requestsFile = path.join(__dirname, 'requests.json')
 const featuredItemId = 2
 
 let requests = loadRequests()
@@ -116,39 +116,65 @@ app.get('/api/featured-item', (request, response) => {
 })
 
 app.get('/api/requests', (request, response) => {
-  const requestsWithMenuItems = requests.map((customerRequest) => {
-    const menuItem = menuItems.find((item) => item.id === customerRequest.menuItemId)
+  const currentRequests = loadRequests()
+  
+  const requestsWithMenuItems = currentRequests.map((customerRequest) => {
     return {
-      ...customerRequest,
-      menuItemName: menuItem?.name ?? 'Menu item no longer available'
+      ...customerRequest
     }
   })
   response.json(requestsWithMenuItems)
 })
 
-app.post('/api/requests', (request, response) => {
-  const { requestType, customerName, menuItemId, customerContact, collectionTime, customerMessage } = request.body
+app.post('/api/requests', (req, res) => {
+  const {
+    name,
+    email,
+    requestType,
+    message
+  } = req.body
 
-  const newRequest = {
-    id: requests.length + 1,
-    requestType: requestType || '',
-    customerName: customerName || '',
-    menuItemId: Number(menuItemId),
-    customerContact: customerContact || '',
-    collectionTime: collectionTime || '',
-    customerMessage: customerMessage || '',
-    createdAt: new Date().toISOString()
+  if (!name || !email || !requestType || !message) {
+    return res.status(400).json({
+      message: 'All request fields are required.'
+    })
   }
 
-  requests.push(newRequest)
-  saveRequests(requests)
+  let requestsData = []
+  try {
+    if (fs.existsSync(requestsFile)) {
+      const requestsText = fs.readFileSync(requestsFile, 'utf8')
+      requestsData = JSON.parse(requestsText)
+    }
+  } catch (error) {
+    console.error('Error reading requests.json:', error)
+  }
 
-  response.status(201).json({
-    message: 'Request saved successfully!',
+  const newRequest = {
+    id: Date.now(),
+    name,
+    email,
+    requestType,
+    message
+  }
+
+  requestsData.push(newRequest)
+
+  try {
+    fs.writeFileSync(
+      requestsFile,
+      JSON.stringify(requestsData, null, 2),
+      'utf8'
+    )
+  } catch (error) {
+    console.error('Error writing to requests.json:', error)
+  }
+
+  res.status(201).json({
+    message: 'Request saved successfully.',
     request: newRequest
   })
 })
-
 
 app.use(express.static(path.join(__dirname, '../client/dist')))
 
@@ -167,20 +193,12 @@ app.listen(PORT, '0.0.0.0', () => {
 
 function loadRequests() {
   try {
-    if (fs.existsSync(DATA_FILE)) {
-      const fileContent = fs.readFileSync(DATA_FILE, 'utf8')
+    if (fs.existsSync(requestsFile)) {
+      const fileContent = fs.readFileSync(requestsFile, 'utf8')
       return JSON.parse(fileContent)
     }
   } catch (error) {
     console.error('Error reading requests.json:', error)
   }
   return []
-}
-
-function saveRequests(data) {
-  try {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf8')
-  } catch (error) {
-    console.error('Error writing to requests.json:', error)
-  }
 }
