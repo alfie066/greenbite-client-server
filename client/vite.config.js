@@ -1,12 +1,15 @@
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import vueDevTools from 'vite-plugin-vue-devtools'
 
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    vueDevTools() // Add it right here!
+  ],
   resolve: {
     alias: {
-      // Maps '@' to your 'src' directory
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },

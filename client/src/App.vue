@@ -509,15 +509,15 @@
 
                 <div class="col-12">
                   <label
-                    for="customerContact"
+                    for="customerEmail"
                     class="form-label fw-bold"
                   >
-                    Email or phone
+                    Email
                   </label>
 
                   <input
-                    id="customerContact"
-                    v-model="customerContact"
+                    id="customerEmail"
+                    v-model="customerEmail"
                     class="form-control"
                     type="text"
                     placeholder="For example, user@email.com"
@@ -669,11 +669,11 @@
                     </p>
 
                     <p>
-                      <strong>Contact:</strong> {{ request.customerContact || 'N/A' }}
+                      <strong>Email:</strong> {{ request.customerEmail || 'N/A' }}
                     </p>
 
                     <p>
-                      <strong>Item:</strong> {{ request.menuItemName || 'N/A' }}
+                      <strong>Item:</strong> {{ request.selectedMenuItemId || 'N/A' }}
                     </p>
 
                     <p>
@@ -833,7 +833,7 @@ const availableOnly = ref(false)
 const requestType = ref('')
 const customerName = ref('')
 const selectedMenuItemId = ref('')
-const customerContact = ref('')
+const customerEmail = ref('')
 const collectionTime = ref('')
 const customerMessage = ref('')
 
@@ -928,31 +928,33 @@ function orderItem() {
   }
 
   const orderData = {
-    requestType: requestType.value,
     customerName: customerName.value,
-    menuItemId: Number(selectedMenuItemId.value),
-    customerContact: customerContact.value,
-    collectionTime: collectionTime.value,
-    customerMessage: customerMessage.value
+    customerEmail: customerEmail.value,
+    requestType: requestType.value,
+    customerMessage: customerMessage.value,
+    selectedMenuItemId: Number(selectedMenuItemId.value),
+    collectionTime: collectionTime.value
   }
 
   fetch('/api/requests', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(orderData)
   })
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) throw new Error('Failed to save request')
+      return response.json()
+    })
     .then((data) => {
       alert('Request submitted successfully!')
-      
       requestType.value = ''
       customerName.value = ''
       selectedMenuItemId.value = ''
-      customerContact.value = ''
+      customerEmail.value = ''
       collectionTime.value = ''
       customerMessage.value = ''
+      
+      fetchRequests()
     })
     .catch((error) => {
       console.error('Error submitting request:', error)

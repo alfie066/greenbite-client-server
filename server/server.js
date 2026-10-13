@@ -117,24 +117,20 @@ app.get('/api/featured-item', (request, response) => {
 
 app.get('/api/requests', (request, response) => {
   const currentRequests = loadRequests()
-  
-  const requestsWithMenuItems = currentRequests.map((customerRequest) => {
-    return {
-      ...customerRequest
-    }
-  })
-  response.json(requestsWithMenuItems)
+  response.json(currentRequests)
 })
 
 app.post('/api/requests', (req, res) => {
   const {
-    name,
-    email,
+    customerName,
+    customerEmail,
     requestType,
-    message
+    customerMessage,
+    selectedMenuItemId,
+    collectionTime
   } = req.body
 
-  if (!name || !email || !requestType || !message) {
+  if (!customerName || !customerEmail || !requestType || !customerMessage) {
     return res.status(400).json({
       message: 'All request fields are required.'
     })
@@ -143,19 +139,23 @@ app.post('/api/requests', (req, res) => {
   let requestsData = []
   try {
     if (fs.existsSync(requestsFile)) {
-      const requestsText = fs.readFileSync(requestsFile, 'utf8')
-      requestsData = JSON.parse(requestsText)
+      requestsData = JSON.parse(fs.readFileSync(requestsFile, 'utf8'))
     }
   } catch (error) {
     console.error('Error reading requests.json:', error)
   }
 
+  const newId = requestsData.length > 0 ? Math.max(...requestsData.map(r => r.id)) + 1 : 1
+
   const newRequest = {
-    id: Date.now(),
-    name,
-    email,
+    id: newId,
+    customerName,
+    customerEmail,
     requestType,
-    message
+    customerMessage,
+    selectedMenuItemId: Number(selectedMenuItemId) || null,
+    collectionTime: collectionTime || '',
+    createdAt: new Date().toISOString()
   }
 
   requestsData.push(newRequest)
