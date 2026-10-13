@@ -123,6 +123,7 @@ header.sticky-top {
 
 .home-section {
   min-height: calc(100vh - 10rem);
+  row-gap: 2rem;
 }
 
 .hero-title {
@@ -439,6 +440,7 @@ header.sticky-top {
   border-radius: 8px;
   margin-top: -2rem;
   margin-bottom: 1.5rem;
+  display: block;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.60);
 }
 
