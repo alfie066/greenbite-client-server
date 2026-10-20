@@ -180,7 +180,7 @@
         </div>
 
         <div class="col-12 col-lg-5">
-          <img :src="bistroImage" alt="Placeholder Bistro Interior" class="bistro-img img-fluid w-100 mb-3" />
+          <img :src="bistroImage" alt="Aston Bistro Interior" class="bistro-img img-fluid w-100 mb-3" />
 
           <article v-if="featuredItem" class="card featured-card text-center">
             <span class="featured-ribbon">
@@ -457,11 +457,6 @@
                 Contact {{ siteDetails.businessName }}
               </h2>
 
-              <p class="text-secondary">
-                The form is visible, but it does not currently
-                save data or update Staff View.
-              </p>
-
               <form
                 class="row g-3 mt-2"
                 @submit.prevent
@@ -609,17 +604,10 @@
               </h3>
 
               <p class="text-secondary">
-                A later exercise will display a dynamic confirmation here.
-              </p>
+              A later exercise will display a dynamic confirmation here.
+            </p>
 
-              <div
-                class="alert alert-warning mb-5"
-                role="alert"
-              >
-                This form does not yet add requests to Staff View.
-              </div>
-
-              <img :src="ordersImage" alt="Orders image" class="bistro-img" />
+            <img :src="ordersImage" alt="Orders image" class="bistro-img mt-4" />
 
             </div>
           </aside>
@@ -913,6 +901,11 @@ function showPage(pageName) {
     if (page.value === 'staff') {
       fetchRequests()
     }
+
+    if (page.value === 'menu') {
+      loadMenuData()
+    }
+    
   window.scrollTo(0, 0)
 }
 
@@ -983,55 +976,42 @@ function formatPrice(value) {
   return `£${Number(value).toFixed(2)}`
 }
 
-async function loadApplicationData() {
+async function loadInitialData() {
   loadError.value = null
-
   try {
-    const [
-      siteResponse,
-      menuResponse,
-      featuredResponse
-    ] = await Promise.all([
+    const [siteRes, featuredRes] = await Promise.all([
       fetch(`${API_BASE_URL}/api/site-details`),
-      fetch(`${API_BASE_URL}/api/menu`),
       fetch(`${API_BASE_URL}/api/featured-item`)
     ])
 
-    if (
-      !siteResponse.ok ||
-      !menuResponse.ok ||
-      !featuredResponse.ok
-    ) {
-      throw new Error(
-        'The application data could not be loaded'
-      )
+    if (!siteRes.ok || !featuredRes.ok) {
+      throw new Error('Failed to load site details')
     }
 
-    const [
-      siteData,
-      menuData,
-      featuredData
-    ] = await Promise.all([
-      siteResponse.json(),
-      menuResponse.json(),
-      featuredResponse.json()
-    ])
-
-    siteDetails.value = siteData
-    menuItems.value = menuData
-    featuredItem.value = featuredData
+    siteDetails.value = await siteRes.json()
+    featuredItem.value = await featuredRes.json()
   } catch (error) {
-    console.error(
-      'Unable to load application data:',
-      error
-    )
+    console.error('Unable to load initial data:', error)
+    loadError.value = 'Something went wrong loading the site.'
+  }
+}
 
-    loadError.value =
-      'Something went wrong loading the site. Please check the server is running and try again.'
+async function loadMenuData() {
+  if (menuItems.value.length > 0) return
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/menu`)
+    if (!response.ok) {
+      throw new Error('Failed to load menu')
+    }
+    menuItems.value = await response.json()
+  } catch (error) {
+    console.error('Unable to load menu:', error)
+    loadError.value = 'Could not load the menu items.'
   }
 }
 
 onMounted(() => {
-  loadApplicationData()
+  loadInitialData()
 })
 </script>

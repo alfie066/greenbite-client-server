@@ -1,23 +1,23 @@
 :root {
-  --green: #292b28;
-  --green-hover: #111210;
+  --green: #2b2430;
+  --green-hover: #18131c;
 
-  --sage: #f2d99c;
-  --sage-light: #fff6dc;
+  --sage: #d6c7e3;
+  --sage-light: #f5f0f9;
 
-  --mustard: #f2b544;
-  --mustard-light: #fff0c7;
+  --mustard: #ba9ecc;
+  --mustard-light: #ece2f2;
 
-  --tomato: #df5b45;
+  --tomato: #d45b78;
 
-  --cream: #fff7e8;
+  --cream: #f8f6f9;
   --paper: #ffffff;
 
-  --ink: #1d1f1c;
-  --muted: #686b66;
-  --line: #ddd8cc;
+  --ink: #1e1a22;
+  --muted: #6a6370;
+  --line: #ded8e3;
 
-  --shadow: 0 12px 30px rgba(29, 31, 28, 0.12);
+  --shadow: 0 12px 30px rgba(30, 26, 34, 0.12);
 }
 
 html {
@@ -45,6 +45,12 @@ body {
 
 header.sticky-top {
   z-index: 1030;
+}
+
+.alert-warning {
+  background-color: var(--mustard-light);
+  border-color: var(--mustard);
+  color: var(--ink);
 }
 
 .navbar.bg-paper {
