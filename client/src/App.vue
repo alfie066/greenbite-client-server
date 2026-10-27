@@ -442,177 +442,161 @@
       </section>
 
 
-      <section
-        v-show="page === 'request'"
-        class="row g-4 align-items-start"
-      >
-        <div class="col-12 col-lg-8">
-          <div class="card page-card shadow-sm border-0">
-            <div class="card-body p-4 p-lg-5">
-              <span class="badge greenbite-label mb-3">
-                Customer order or enquiry
-              </span>
+      <div class="container" v-show="page === 'request'">
+        <section class="row g-4 align-items-start">
+          
+          <div class="col-12 col-lg-7">
+            <div class="card page-card shadow-sm border-0">
+              <div class="card-body p-4 p-lg-5">
+                <span class="badge greenbite-label mb-3">Customer order or enquiry</span>
+                <h2 class="display-6 fw-bold">Contact {{ siteDetails.businessName }}</h2>
 
-              <h2 class="display-6 fw-bold">
-                Contact {{ siteDetails.businessName }}
-              </h2>
-
-              <form
-                class="row g-3 mt-2"
-                @submit.prevent
-              >
-                <div class="col-12 col-md-6">
-                  <label
-                    for="requestType"
-                    class="form-label fw-bold"
-                  >
-                    Request type
-                  </label>
-
-                  <select
-                    id="requestType"
-                    v-model="requestType"
-                    class="form-select"
-                    required
-                  >
-                    <option value="">
-                      Select a request type
-                    </option>
-
-                    <option>Collection order</option>
-                    <option>General enquiry</option>
-                  </select>
-                </div>
-
-                <div class="col-12 col-md-6">
-                  <label
-                    for="customerName"
-                    class="form-label fw-bold"
-                  >
-                    Your name
-                  </label>
-
-                  <input
-                    id="customerName"
-                    v-model="customerName"
-                    class="form-control"
-                    type="text"
-                    placeholder="For example, Luis"
-                    required
-                  >
-                </div>
-
-                <div class="col-12">
-                  <label
-                    for="customerEmail"
-                    class="form-label fw-bold"
-                  >
-                    Email
-                  </label>
-
-                  <input
-                    id="customerEmail"
-                    v-model="customerEmail"
-                    class="form-control"
-                    type="text"
-                    placeholder="For example, user@email.com"
-                    required
-                  >
-                </div>
-
-                <div class="col-12 col-md-8">
-                  <label
-                    for="requestedItem"
-                    class="form-label fw-bold"
-                  >
-                    Menu item
-                  </label>
-
-                  <select
-                    id="requestedItem"
-                    v-model="selectedMenuItemId"
-                    class="form-select"
-                    required
-                  >
-                    <option value="">
-                      Select an item
-                    </option>
-
-                    <option
-                      v-for="item in availableMenuItems"
-                      :key="item.id"
-                      :value="String(item.id)"
+                <form class="row g-3 mt-2" @submit.prevent>
+                  <div class="col-12 col-md-6">
+                    <label
+                      for="requestType"
+                      class="form-label fw-bold"
                     >
-                      {{ item.name }}
-                    </option>
-                  </select>
-                </div>
+                      Request type
+                    </label>
 
-                <div class="col-12 col-md-4">
-                  <label
-                    for="collectionTime"
-                    class="form-label fw-bold"
-                  >
-                    Collection time
-                  </label>
+                    <select
+                      id="requestType"
+                      v-model="requestType"
+                      class="form-select"
+                      required
+                    >
+                      <option value="">
+                        Select a request type
+                      </option>
 
-                  <input
-                    id="collectionTime"
-                    v-model="collectionTime"
-                    class="form-control"
-                    type="time"
-                  >
-                </div>
+                      <option>Collection order</option>
+                      <option>General enquiry</option>
+                    </select>
+                  </div>
 
-                <div class="col-12">
-                  <label
-                    for="customerMessage"
-                    class="form-label fw-bold"
-                  >
-                    Dietary note, message or question
-                  </label>
+                  <div class="col-12 col-md-6">
+                    <label
+                      for="customerName"
+                      class="form-label fw-bold"
+                    >
+                      Your name
+                    </label>
 
-                  <textarea
-                    id="customerMessage"
-                    v-model="customerMessage"
-                    class="form-control"
-                    rows="4"
-                    maxlength="300"
-                    placeholder="Add a short message"
-                  ></textarea>
-                </div>
+                    <input
+                      id="customerName"
+                      v-model="customerName"
+                      class="form-control"
+                      type="text"
+                      placeholder="For example, Luis"
+                      required
+                    >
+                  </div>
 
-                <div class="col-12">
-                  <button
-                    class="btn btn-greenbite"
-                    type="submit"
-                    @click.prevent="orderItem"
-                  >
-                    Submit request
-                  </button>
-                </div>
-              </form>
+                  <div class="col-12">
+                    <label
+                      for="customerEmail"
+                      class="form-label fw-bold"
+                    >
+                      Email
+                    </label>
+
+                    <input
+                      id="customerEmail"
+                      v-model="customerEmail"
+                      class="form-control"
+                      type="text"
+                      placeholder="For example, user@email.com"
+                      required
+                    >
+                  </div>
+
+                  <div class="col-12 col-md-8">
+                    <label
+                      for="requestedItem"
+                      class="form-label fw-bold"
+                    >
+                      Menu item
+                    </label>
+
+                    <select
+                      id="requestedItem"
+                      v-model="selectedMenuItemId"
+                      class="form-select"
+                      required
+                    >
+                      <option value="">
+                        Select an item
+                      </option>
+
+                      <option
+                        v-for="item in availableMenuItems"
+                        :key="item.id"
+                        :value="String(item.id)"
+                      >
+                        {{ item.name }}
+                      </option>
+                    </select>
+                  </div>
+
+                  <div class="col-12 col-md-4">
+                    <label
+                      for="collectionTime"
+                      class="form-label fw-bold"
+                    >
+                      Collection time
+                    </label>
+
+                    <input
+                      id="collectionTime"
+                      v-model="collectionTime"
+                      class="form-control"
+                      type="time"
+                    >
+                  </div>
+
+                  <div class="col-12">
+                    <label
+                      for="customerMessage"
+                      class="form-label fw-bold"
+                    >
+                      Dietary note, message or question
+                    </label>
+
+                    <textarea
+                      id="customerMessage"
+                      v-model="customerMessage"
+                      class="form-control"
+                      rows="4"
+                      maxlength="300"
+                      placeholder="Add a short message"
+                    ></textarea>
+                  </div>
+
+                  <div class="col-12">
+              <button class="btn btn-greenbite" type="submit" @click.prevent="orderItem">
+                Submit request
+              </button>
             </div>
-          </div>
+          </form>
         </div>
+      </div>
+    </div>
 
-        <div class="col-12 col-lg-4">
-          <aside class="card confirmation-card shadow-sm border-0">
-            <div class="card-body p-4">
-              <h3 class="h5 fw-bold">
-                Confirmation preview
-              </h3>
-
-              <p class="text-secondary">
-              A later exercise will display a dynamic confirmation here.
-            </p>
-
-            <img :src="ordersImage" alt="Orders image" class="bistro-img mt-4" />
-
-            </div>
-          </aside>
+    <div class="col-12 col-lg-5">
+      <aside class="card confirmation-card shadow-sm border-0">
+        <div class="card-body p-4">
+          <h3 class="h5 fw-bold">Confirmation preview</h3>
+          <p class="text-secondary">
+            A later exercise will display a dynamic confirmation here.
+          </p>
+          <img :src="ordersImage" alt="Orders image" class="bistro-img mt-4" />
         </div>
-      </section>
+      </aside>
+    </div>
+
+  </section>
+</div>
 
 
       <section v-show="page === 'staff'">
