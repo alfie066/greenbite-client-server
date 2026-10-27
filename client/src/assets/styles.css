@@ -445,8 +445,8 @@ header.sticky-top {
   max-height: 230px;
   object-fit: cover;
   border-radius: 8px;
-  margin-top: -2rem;
-  margin-bottom: 1.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   display: block;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.60);
 }
@@ -460,7 +460,7 @@ header.sticky-top {
   border: 2px solid var(--mustard);
   border-radius: 1rem;
   background: var(--mustard-light);
-  overflow: hidden; /* Clips the image cleanly to the rounded corners */
+  overflow: hidden;
 }
 
 .menu-item-img {

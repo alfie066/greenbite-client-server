@@ -101,7 +101,7 @@
       </nav>
     </header>
 
-    <div class="container-fluid px-3 px-lg-5 py-4 py-lg-5" style="max-width: 1600px; margin: 0 auto;">
+    <div class="container-fluid px-3 px-lg-5 py-3 py-lg-4" style="max-width: 1600px; margin: 0 auto;">
       <section
         v-show="page === 'home'"
         class="row g-4 align-items-center home-section"
@@ -226,7 +226,7 @@
     </div>
 
 
-      <section v-show="page === 'menu'">
+      <section v-show="page === 'menu'" class="container my-0">
         <div class="card page-card shadow-sm border-0">
           <div class="card-body p-4 p-lg-5">
             <span class="badge greenbite-label mb-3">
@@ -599,7 +599,7 @@
 </div>
 
 
-      <section v-show="page === 'staff'">
+      <section v-show="page === 'staff'" class="container my-0">
         <div class="card page-card staff-page shadow-sm border-0">
           <div class="card-body p-4 p-lg-5">
             <span class="badge staff-label mb-3">
@@ -664,7 +664,7 @@
         </div>
       </section>
 
-      <section v-show="page === 'network'">
+      <section v-show="page === 'network'" class="container my-0">
         <div class="card page-card shadow-sm border-0">
           <div class="card-body p-4 p-lg-5">
             <span class="badge greenbite-label mb-3">
@@ -889,7 +889,10 @@ function showPage(pageName) {
     if (page.value === 'menu') {
       loadMenuData()
     }
-    
+    if (page.value === 'request') {
+      loadMenuData()
+    }
+
   window.scrollTo(0, 0)
 }
 
