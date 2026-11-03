@@ -86,7 +86,7 @@
               :aria-current="page === 'request' ? 'page' : undefined"
               @click="showPage('request')"
             >
-              Order
+              Basket and Order
             </button>
 
               <button
@@ -451,37 +451,69 @@
         <div class="card page-card shadow-sm border-0">
           <div class="card-body p-4 p-lg-5">
             
-            <h2 class="display-6 fw-bold mb-3">Create Sandwich</h2>
-            <p class="text-secondary mb-4">Customize your ingredients below.</p>
+            <h2 class="display-6 fw-bold mb-3">Create Your Sandwich</h2>
+            <p class="text-secondary mb-4">Choose your fillings, sauces, and toppings</p>
 
             <form @submit.prevent>
               <div class="mb-3">
                 <label for="customName" class="form-label fw-bold">Sandwich Name / Title</label>
-                <input type="text" id="customName" class="form-control" placeholder="e.g. My Custom Lunch">
+                <input type="text" id="customName" v-model="customSandwich.name" class="form-control" placeholder="e.g. My Ultimate Sandwich">
               </div>
 
-              <div class="mb-3">
-                <label for="tomatoQty" class="form-label fw-bold">Tomato Slices</label>
-                <input type="number" id="tomatoQty" class="form-control" placeholder="e.g. 2">
+              <div class="row">
+                <div class="col-12 col-md-6 mb-3">
+                  <label for="breadType" class="form-label fw-bold">Bread Type</label>
+                  <select id="breadType" v-model="customSandwich.bread" class="form-select">
+                    <option value="">Select bread</option>
+                    <option v-for="bread in availableOptions.breads" :key="bread.name" :value="bread.name">
+                      {{ bread.name }} (+£{{ bread.price.toFixed(2) }})
+                    </option>
+                  </select>
+                </div>
+
+                <div class="col-12 col-md-6 mb-3">
+                  <label for="cheeseType" class="form-label fw-bold">Cheese</label>
+                  <select id="cheeseType" v-model="customSandwich.cheese" class="form-select">
+                    <option value="">Select cheese</option>
+                    <option v-for="cheese in availableOptions.cheeses" :key="cheese.name" :value="cheese.name">
+                      {{ cheese.name }} (+£{{ cheese.price.toFixed(2) }})
+                    </option>
+                  </select>
+                </div>
               </div>
 
-              <div class="mb-3">
-                <label for="cheeseQty" class="form-label fw-bold">Cheese Slices</label>
-                <input type="number" id="cheeseQty" class="form-control" placeholder="e.g. 1">
+              <label class="form-label fw-bold d-block mb-2">Toppings</label>
+              <div class="row mb-3 px-2">
+                <div class="col-6 col-md-4 form-check" v-for="topping in availableOptions.toppings" :key="topping.name">
+                  <input class="form-check-input" type="checkbox" :value="topping.name" :id="'top-' + topping.name" v-model="customSandwich.toppings">
+                  <label class="form-check-label" :for="'top-' + topping.name">
+                    {{ topping.name }} (+£{{ topping.price.toFixed(2) }})
+                  </label>
+                </div>
               </div>
 
-              <div class="mb-3">
-                <label for="lettuceQty" class="form-label fw-bold">Lettuce Amount</label>
-                <input type="text" id="lettuceQty" class="form-control" placeholder="e.g. Extra / Normal / None">
+              <label class="form-label fw-bold d-block mb-2">Sauces</label>
+              <div class="row mb-3 px-2">
+                <div class="col-6 col-md-4 form-check" v-for="sauce in availableOptions.sauces" :key="sauce.name">
+                  <input class="form-check-input" type="checkbox" :value="sauce.name" :id="'sauce-' + sauce.name" v-model="customSandwich.sauces">
+                  <label class="form-check-label" :for="'sauce-' + sauce.name">
+                    {{ sauce.name }} (+£{{ sauce.price.toFixed(2) }})
+                  </label>
+                </div>
               </div>
 
               <div class="mb-4">
                 <label for="extraNotes" class="form-label fw-bold">Special Instructions</label>
-                <textarea id="extraNotes" class="form-control" rows="2" placeholder="e.g. No mayo, toasted bread"></textarea>
+                <textarea id="extraNotes" v-model="customSandwich.extraNotes" class="form-control" rows="2" placeholder="e.g. Toasted, extra napkins"></textarea>
               </div>
 
-              <button type="button" class="btn btn-greenbite btn-lg">
-                Add to basket
+              <div class="alert alert-light border d-flex justify-content-between align-items-center mb-3">
+                <span class="fw-bold text-secondary">Calculated Total:</span>
+                <span class="fs-4 fw-bold text-success">£{{ calculatedPrice.toFixed(2) }}</span>
+              </div>
+
+              <button type="button" class="btn btn-greenbite btn-lg w-100" @click="addCustomSandwichToBasket">
+                Add custom sub to basket (£{{ calculatedPrice.toFixed(2) }})
               </button>
             </form>
 
@@ -584,24 +616,56 @@
       <div class="d-flex flex-column gap-4">
         
         <aside class="card confirmation-card shadow-sm border-0">
-          <div class="card-body p-4">
-            <h5 class="fw-bold mb-2">Your Basket</h5>
-            <p v-if="basket.length === 0" class="text-muted small mb-0">Your basket is empty.</p>
-            
-            <ul v-else class="list-group mb-3">
-              <li v-for="(item, index) in basket" :key="index" class="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                  <strong>{{ item.name }}</strong> (x{{ item.quantity }})
+          <div class="card page-card shadow-sm border-0 p-4">
+            <h4 class="fw-bold mb-3">Your Basket</h4>
+
+            <div v-if="basket.length === 0" class="text-secondary">
+              Your basket is empty.
+            </div>
+
+            <div v-else>
+              <div v-for="(item, index) in basket" :key="index" class="card mb-3 p-3 border-0 bg-light">
+                <div class="d-flex justify-content-between align-items-center">
+                  
+                  <div v-if="item.isCustom">
+                    <h6 class="fw-bold mb-1"> {{ item.name }} (Custom Sandwich)</h6>
+                    <small class="text-secondary d-block">
+                      Bread: {{ item.bread }} | Cheese: {{ item.cheese }}
+                    </small>
+                    <small class="text-secondary d-block" v-if="item.toppings && item.toppings.length">
+                      Toppings: {{ item.toppings.join(', ') }}
+                    </small>
+                    <small class="text-secondary d-block" v-if="item.sauces && item.sauces.length">
+                      Sauces: {{ item.sauces.join(', ') }}
+                    </small>
+                    <small class="text-secondary d-block" v-if="item.extraNotes">
+                      Note: {{ item.extraNotes }}
+                    </small>
+                    <span class="text-dark fw-bold">£{{ (item.price).toFixed(2) }} x {{ item.quantity }} = £{{ (item.price * item.quantity).toFixed(2) }}</span>                  </div>
+
+                  <div v-else>
+                    <h6 class="fw-bold mb-1">{{ getMenuItem(item.id).name }}</h6>
+                    <small class="text-secondary">
+                      £{{ getMenuItem(item.id).price.toFixed(2) }} x {{item.quantity}} = £{{ (getMenuItem(item.id).price * item.quantity).toFixed(2) }}
+                    </small>
+                  </div>
+
+                  <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-sm btn-outline-secondary" @click="decreaseQuantity(index)">-</button>
+                    <span class="fw-bold px-2">{{ item.quantity }}</span>
+                    <button class="btn btn-sm btn-outline-secondary" @click="increaseQuantity(index)">+</button>
+                  </div>
+
                 </div>
-                <div>
-                  <span class="badge bg-secondary me-2">{{ formatPrice(item.price * item.quantity) }}</span>
-                  <button type="button" class="btn btn-sm btn-outline-danger" @click="removeFromBasket(index)">Remove</button>
-                </div>
-              </li>
-            </ul>
+              </div>
+            </div>
           </div>
         </aside>
 
+      </div>
+    </div>
+
+      <div class="col-12 col-lg-5 mb-4">
         <aside class="card confirmation-card shadow-sm border-0">
           <div class="card-body p-4">
             <h3 class="h5 fw-bold">Confirmation preview</h3>
@@ -611,78 +675,124 @@
             <img :src="ordersImage" alt="Orders image" class="bistro-img mt-4" />
           </div>
         </aside>
-
       </div>
-    </div>
 
   </section>
 </div>
 
 
       <section v-show="page === 'staff'" class="container my-0">
-        <div class="card page-card staff-page shadow-sm border-0">
-          <div class="card-body p-4 p-lg-5">
-            <span class="badge staff-label mb-3">
-              Staff request view
-            </span>
+  <div class="card page-card staff-page shadow-sm border-0">
+    <div class="card-body p-4 p-lg-5">
+      <span class="badge staff-label mb-3">
+        Staff request view
+      </span>
 
-            <h2 class="display-6 fw-bold">
-              Customer orders and enquiries
-            </h2>
+      <h2 class="display-6 fw-bold">
+        Customer orders and enquiries
+      </h2>
 
-            <p class="text-secondary">
-              Live customer requests fetched from the server.
-            </p>
+      <p class="text-secondary">
+        Live customer requests fetched from the server.
+      </p>
 
-            <p v-if="requests.length === 0" class="text-muted mt-3 mb-0">
-              No requests or orders found.
-            </p>
+      <p v-if="requests.length === 0" class="text-muted mt-3 mb-0">
+        No requests or orders found.
+      </p>
 
-            <div v-else class="row g-4 mt-1">
-              <div 
-                v-for="request in requests" 
-                :key="request.id" 
-                class="col-12 col-lg-6"
-              >
-                <article class="card request-card h-100 shadow-sm">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between gap-3 mb-3">
-                      <h3 class="h5 fw-bold mb-0">
-                        {{ request.customerName || 'Anonymous' }}
-                      </h3>
+      <div v-else class="row g-4 mt-1">
+        <div 
+          v-for="request in requests" 
+          :key="request.id" 
+          class="col-12 col-lg-6"
+        >
+          <article class="card request-card h-100 shadow-sm border">
+            <div class="card-body d-flex flex-column">
+              
+              <div class="d-flex justify-content-between align-items-center gap-3 mb-3 pb-2 border-bottom">
+                <h3 class="h5 fw-bold mb-0 text-dark">
+                  {{ request.customerName || 'Anonymous' }}
+                </h3>
+                <span class="badge bg-light text-secondary border font-monospace">
+                  Ref: #{{ request.id }}
+                </span>
+              </div>
+
+              <div class="mb-3 small text-secondary">
+                <div class="mb-1"><strong>Request Type:</strong> {{ request.requestType || 'N/A' }}</div>
+                <div class="mb-1"><strong>Email:</strong> {{ request.customerEmail || 'N/A' }}</div>
+                <div class="mb-1"><strong>Preferred Time:</strong> {{ request.collectionTime || 'Not specified' }}</div>
+              </div>
+
+              <div class="mb-3 flex-grow-1">
+                <strong class="text-dark d-block mb-2">Items Ordered:</strong>
+                
+                <div v-if="!request.basket || request.basket.length === 0" class="text-muted small fst-italic">
+                  No items in basket for this request.
+                </div>
+
+                <div v-else class="d-flex flex-column gap-2">
+                  <div 
+                    v-for="(item, idx) in request.basket" 
+                    :key="idx" 
+                    class="p-2.5 bg-light rounded-2 border"
+                  >
+                    
+                    <div v-if="item.isCustom">
+                      <div class="d-flex justify-content-between align-items-start">
+                        <span class="fw-bold text-dark">
+                          {{ item.name }} 
+                          <span class="badge bg-dark text-white ms-1" style="font-size: 0.65rem;">Custom Sandwich</span>
+                        </span>
+                        <span class="fw-bold text-dark">
+                          £{{ ((item.price || 0) * (item.quantity || 1)).toFixed(2) }}
+                        </span>
+                      </div>
+                      <div class="small text-secondary mt-1">
+                        <div><strong>Bread:</strong> {{ item.bread }} | <strong>Cheese:</strong> {{ item.cheese }}</div>
+                        <div v-if="item.toppings && item.toppings.length"><strong>Toppings:</strong> {{ item.toppings.join(', ') }}</div>
+                        <div v-if="item.sauces && item.sauces.length"><strong>Sauces:</strong> {{ item.sauces.join(', ') }}</div>
+                        <div v-if="item.extraNotes"><strong>Note:</strong> {{ item.extraNotes }}</div>
+                      </div>
+                      <div class="small text-muted mt-1">
+                        Qty: {{ item.quantity }} (£{{ (item.price || 0).toFixed(2) }} each)
+                      </div>
                     </div>
 
-                    <p>
-                      <strong>Reference:</strong> {{ request.id }}
-                    </p>
+                    <div v-else class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <span class="fw-bold text-dark">
+                          {{ getMenuItem(item.id).name }}
+                        </span>
+                        <div class="small text-muted">
+                          £{{ (getMenuItem(item.id).price || 0).toFixed(2) }} each
+                        </div>
+                      </div>
+                      <div class="text-end">
+                        <span class="fw-bold text-dark">
+                          £{{ (((getMenuItem(item.id).price || 0)) * (item.quantity || 1)).toFixed(2) }}
+                        </span>
+                        <div class="small text-muted">Qty: {{ item.quantity }}</div>
+                      </div>
+                    </div>
 
-                    <p>
-                      <strong>Request type:</strong> {{ request.requestType || 'N/A' }}
-                    </p>
-
-                    <p>
-                      <strong>Email:</strong> {{ request.customerEmail || 'N/A' }}
-                    </p>
-
-                    <p>
-                      <strong>Item:</strong> {{ request.selectedMenuItemId || 'N/A' }}
-                    </p>
-
-                    <p>
-                      <strong>Preferred time:</strong> {{ request.collectionTime || 'Not specified' }}
-                    </p>
-
-                    <p class="mb-0">
-                      <strong>Message:</strong> {{ request.customerMessage || 'None' }}
-                    </p>
                   </div>
-                </article>
+                </div>
               </div>
-            </div>
 
-          </div>
+              <div class="mt-auto pt-2 border-top small">
+                <strong>Message: </strong> 
+                <span class="text-secondary">{{ request.customerMessage || 'None' }}</span>
+              </div>
+
+            </div>
+          </article>
         </div>
-      </section>
+      </div>
+
+    </div>
+  </div>
+</section>
 
       <section v-show="page === 'network'" class="container my-0">
         <div class="card page-card shadow-sm border-0">
@@ -852,6 +962,28 @@ const dietaryTags = computed(() => {
   ].sort()
 })
 
+const calculatedPrice = computed(() => {
+  let total = 0
+
+  const selectedBread = availableOptions.value.breads.find(b => b.name === customSandwich.value.bread)
+  if (selectedBread) total += selectedBread.price
+
+  const selectedCheese = availableOptions.value.cheeses.find(c => c.name === customSandwich.value.cheese)
+  if (selectedCheese) total += selectedCheese.price
+
+  customSandwich.value.toppings.forEach(toppingName => {
+    const found = availableOptions.value.toppings.find(t => t.name === toppingName)
+    if (found) total += found.price
+  })
+
+  customSandwich.value.sauces.forEach(sauceName => {
+    const found = availableOptions.value.sauces.find(s => s.name === sauceName)
+    if (found) total += found.price
+  })
+
+  return Number(total.toFixed(2))
+})
+
 const filteredMenuItems = computed(() => {
   const normalisedSearch = searchTerm.value
     .trim()
@@ -898,6 +1030,10 @@ const filteredMenuItems = computed(() => {
   })
 })
 
+function getMenuItem(id) { //hi this is alfie, this is a helper method for me to get item info in basket
+  return menuItems.value.find(item => item.id === id) || { name: 'Item #' + id, price: 0 }
+}
+
 const availableMenuItems = computed(() => {
   return menuItems.value.filter((item) => item.available)
 })
@@ -912,25 +1048,86 @@ function showPage(pageName) {
       loadMenuData()
     }
 
+    if (page.value === 'create') {
+      fetchSandwichOptions()
+    }
+
   window.scrollTo(0, 0)
 }
+const customSandwich = ref({
+  name: '',
+  bread: '',
+  cheese: '',
+  toppings: [],
+  sauces: [],
+  extraNotes: ''
+})
 
 function addToBasket(item) {
-  const existing = basket.value.find(i => i.id === item.id)
+  const existing = basket.value.find(i => i.id === item.id && !i.isCustom)
   if (existing) {
     existing.quantity = (existing.quantity || 1) + 1
   } else {
-    basket.value.push({ ...item, quantity: 1 })
+    basket.value.push({
+      id: item.id,
+      quantity: 1
+    })
   }
 
+  triggerGlow()
+}
+
+function addCustomSandwichToBasket() {
+  if (!customSandwich.value.name.trim()) {
+    alert('Please give your custom sandwich a name!')
+    return
+  }
+
+  const newCustomItem = {
+    isCustom: true,
+    name: customSandwich.value.name,
+    bread: customSandwich.value.bread || 'Standard',
+    cheese: customSandwich.value.cheese || 'None',
+    toppings: customSandwich.value.toppings || [],
+    sauces: customSandwich.value.sauces || [],
+    extraNotes: customSandwich.value.extraNotes || '',
+    price: calculatedPrice.value,
+    quantity: 1
+  }
+
+  basket.value.push(newCustomItem)
+
+  customSandwich.value = {
+    name: '',
+    bread: '',
+    cheese: '',
+    toppings: [],
+    sauces: [],
+    extraNotes: ''
+  }
+
+  alert('Custom sandwich added to basket!')
+  triggerGlow()
+}
+
+function decreaseQuantity(index) {
+  if (basket.value[index].quantity > 1) {
+    basket.value[index].quantity -= 1
+  } else {
+    basket.value.splice(index, 1)
+  }
+}
+
+function increaseQuantity(index) {
+  basket.value[index].quantity += 1
+}
+
+function triggerGlow() {
   if (glowTimeout) clearTimeout(glowTimeout)
-  
   isBasketAnimating.value = false
-  
   setTimeout(() => {
     isBasketAnimating.value = true
   }, 10)
-
   glowTimeout = setTimeout(() => {
     isBasketAnimating.value = false
   }, 700)
@@ -1003,6 +1200,22 @@ function fetchRequests() {
     .catch((error) => {
       console.error('Error fetching requests:', error)
     })
+}
+
+const availableOptions = ref({
+  breads: [],
+  cheeses: [],
+  toppings: [],
+  sauces: []
+})
+
+function fetchSandwichOptions() {
+  fetch('/api/sandwich-options')
+    .then(response => response.json())
+    .then(data => {
+      availableOptions.value = data
+    })
+    .catch(error => console.error('Error fetching sandwich options:', error))
 }
 
 function clearFilters() {

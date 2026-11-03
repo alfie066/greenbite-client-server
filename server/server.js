@@ -144,6 +144,48 @@ const menuItems = [
   }
 ]
 
+const sandwichOptions = {
+  breads: [
+    { name: 'Italian White', price: 4.50 },
+    { name: 'Honey Oat', price: 4.80 },
+    { name: 'Flatbread', price: 4.70 },
+    { name: 'Gluten-Free Bread', price: 5.20 },
+    { name: 'Herbs & Cheese', price: 4.90 },
+    { name: 'Whole Wheat', price: 4.60 }
+  ],
+  cheeses: [
+    { name: 'None', price: 0.00 },
+    { name: 'Cheddar', price: 0.40 },
+    { name: 'Monterey Jack', price: 0.50 },
+    { name: 'Vegan Cheese', price: 0.60 },
+    { name: 'Swiss', price: 0.50 },
+    { name: 'Mozzarella', price: 0.55 }
+  ],
+  toppings: [
+    { name: 'Tomato', price: 0.25 },
+    { name: 'Lettuce', price: 0.20 },
+    { name: 'Onion', price: 0.20 },
+    { name: 'Jalapenos', price: 0.30 },
+    { name: 'Cucumbers', price: 0.20 },
+    { name: 'Sweetcorn', price: 0.20 },
+    { name: 'Olives', price: 0.30 },
+    { name: 'Spinach', price: 0.25 },
+    { name: 'Bell Peppers', price: 0.25 }
+  ],
+  sauces: [
+    { name: 'Ketchup', price: 0.15 },
+    { name: 'Mayonnaise', price: 0.15 },
+    { name: 'BBQ', price: 0.20 },
+    { name: 'Sweet Onion', price: 0.20 },
+    { name: 'Garlic Mayo', price: 0.20 },
+    { name: 'Hot Chili', price: 0.20 }
+  ]
+}
+
+app.get('/api/sandwich-options', (req, res) => {
+  res.json(sandwichOptions)
+})
+
 const requestsFile = path.join(__dirname, 'requests.json')
 const featuredItemId = 2
 
@@ -180,8 +222,7 @@ app.post('/api/requests', (req, res) => {
     collectionTime
   } = req.body
 
-  // Remove customerMessage from here so it's optional!
-  // Add collectionTime here if you want the server to require it too.
+
   if (!customerName || !customerEmail || !requestType || !collectionTime) {
     return res.status(400).json({
       message: 'Required request fields are missing.'
@@ -204,7 +245,7 @@ app.post('/api/requests', (req, res) => {
     customerName,
     customerEmail,
     requestType,
-    customerMessage: customerMessage || '', // Saves empty string if left blank
+    customerMessage: customerMessage || '',
     basket: basket || [],
     collectionTime: collectionTime || '',
     createdAt: new Date().toISOString()
