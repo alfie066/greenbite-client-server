@@ -69,6 +69,16 @@
               <button
                 type="button"
                 class="nav-link nav-button"
+                :class="{ active: page === 'create' }"
+                :aria-current="page === 'create' ? 'page' : undefined"
+                @click="showPage('create')"
+              >
+                Create Sandwich
+              </button>
+
+              <button
+                type="button"
+                class="nav-link nav-button"
                 :class="{ active: page === 'request' }"
                 :aria-current="page === 'request' ? 'page' : undefined"
                 @click="showPage('request')"
@@ -437,6 +447,48 @@
                 </article>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section v-show="page === 'create'" class="container my-0">
+        <div class="card page-card shadow-sm border-0">
+          <div class="card-body p-4 p-lg-5">
+            
+            <h2 class="display-6 fw-bold mb-3">Create Sandwich</h2>
+            <p class="text-secondary mb-4">Customize your ingredients below.</p>
+
+            <form @submit.prevent>
+              <div class="mb-3">
+                <label for="customName" class="form-label fw-bold">Sandwich Name / Title</label>
+                <input type="text" id="customName" class="form-control" placeholder="e.g. My Custom Lunch">
+              </div>
+
+              <div class="mb-3">
+                <label for="tomatoQty" class="form-label fw-bold">Tomato Slices</label>
+                <input type="number" id="tomatoQty" class="form-control" placeholder="e.g. 2">
+              </div>
+
+              <div class="mb-3">
+                <label for="cheeseQty" class="form-label fw-bold">Cheese Slices</label>
+                <input type="number" id="cheeseQty" class="form-control" placeholder="e.g. 1">
+              </div>
+
+              <div class="mb-3">
+                <label for="lettuceQty" class="form-label fw-bold">Lettuce Amount</label>
+                <input type="text" id="lettuceQty" class="form-control" placeholder="e.g. Extra / Normal / None">
+              </div>
+
+              <div class="mb-4">
+                <label for="extraNotes" class="form-label fw-bold">Special Instructions</label>
+                <textarea id="extraNotes" class="form-control" rows="2" placeholder="e.g. No mayo, toasted bread"></textarea>
+              </div>
+
+              <button type="button" class="btn btn-greenbite btn-lg">
+                Place Order
+              </button>
+            </form>
+
           </div>
         </div>
       </section>
@@ -886,10 +938,7 @@ function showPage(pageName) {
       fetchRequests()
     }
 
-    if (page.value === 'menu') {
-      loadMenuData()
-    }
-    if (page.value === 'request') {
+    if (page.value === 'request' || page.value === 'menu' || page.value === 'create') {
       loadMenuData()
     }
 
