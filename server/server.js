@@ -176,13 +176,15 @@ app.post('/api/requests', (req, res) => {
     customerEmail,
     requestType,
     customerMessage,
-    selectedMenuItemId,
+    basket,
     collectionTime
   } = req.body
 
-  if (!customerName || !customerEmail || !requestType || !customerMessage) {
+  // Remove customerMessage from here so it's optional!
+  // Add collectionTime here if you want the server to require it too.
+  if (!customerName || !customerEmail || !requestType || !collectionTime) {
     return res.status(400).json({
-      message: 'All request fields are required.'
+      message: 'Required request fields are missing.'
     })
   }
 
@@ -202,8 +204,8 @@ app.post('/api/requests', (req, res) => {
     customerName,
     customerEmail,
     requestType,
-    customerMessage,
-    selectedMenuItemId: Number(selectedMenuItemId) || null,
+    customerMessage: customerMessage || '', // Saves empty string if left blank
+    basket: basket || [],
     collectionTime: collectionTime || '',
     createdAt: new Date().toISOString()
   }

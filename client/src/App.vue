@@ -77,14 +77,17 @@
               </button>
 
               <button
-                type="button"
-                class="nav-link nav-button"
-                :class="{ active: page === 'request' }"
-                :aria-current="page === 'request' ? 'page' : undefined"
-                @click="showPage('request')"
-              >
-                Order or Enquiry
-              </button>
+              type="button"
+              class="nav-link nav-button"
+              :class="{ 
+                active: page === 'request',
+                'basket-glow': isBasketAnimating 
+              }"
+              :aria-current="page === 'request' ? 'page' : undefined"
+              @click="showPage('request')"
+            >
+              Order
+            </button>
 
               <button
                 type="button"
@@ -138,13 +141,6 @@
               Explore the menu
             </button>
 
-            <button
-              class="btn btn-outline-greenbite btn-lg"
-              type="button"
-              @click="showPage('request')"
-            >
-              Send a request
-            </button>
           </div>
 
           <div class="row g-3">
@@ -225,9 +221,9 @@
               <button
                 class="btn btn-outline-greenbite btn-sm mt-3"
                 type="button"
-                @click="requestItem(featuredItem)"
+                @click="addToBasket(featuredItem)"
               >
-                Request this item
+                Add to basket
               </button>
             </div>
           </article>
@@ -429,9 +425,9 @@
                         v-if="item.available"
                         class="btn btn-outline-greenbite btn-sm"
                         type="button"
-                        @click="requestItem(item)"
+                        @click="addToBasket(item)"
                       >
-                        Request this item
+                        Add to basket
                       </button>
 
                       <button
@@ -485,7 +481,7 @@
               </div>
 
               <button type="button" class="btn btn-greenbite btn-lg">
-                Place Order
+                Add to basket
               </button>
             </form>
 
@@ -495,138 +491,87 @@
 
 
       <div class="container" v-show="page === 'request'">
-        <section class="row g-4 align-items-start">
-          
-          <div class="col-12 col-lg-7">
-            <div class="card page-card shadow-sm border-0">
-              <div class="card-body p-4 p-lg-5">
-                <span class="badge greenbite-label mb-3">Customer order or enquiry</span>
-                <h2 class="display-6 fw-bold">Contact {{ siteDetails.businessName }}</h2>
+  <section class="row g-4 align-items-start">
+    
+    <div class="col-12 col-lg-7">
+      <div class="card page-card shadow-sm border-0">
+        <div class="card-body p-4 p-lg-5">
+          <span class="badge greenbite-label mb-3">Customer order</span>
+          <h2 class="display-6 fw-bold">Contact {{ siteDetails.businessName }}</h2>
 
-                <form class="row g-3 mt-2" @submit.prevent>
-                  <div class="col-12 col-md-6">
-                    <label
-                      for="requestType"
-                      class="form-label fw-bold"
-                    >
-                      Request type
-                    </label>
+          <form class="row g-3 mt-2" @submit.prevent="orderBasket">
+            <div class="col-12 col-md-6">
+              <label for="requestType" class="form-label fw-bold">
+                Request type
+              </label>
+              <select
+                id="requestType"
+                v-model="requestType"
+                class="form-select"
+                required
+              >
+                <option value="">Select a request type</option>
+                <option>Collection order</option>
+                <option>General enquiry</option>
+              </select>
+            </div>
 
-                    <select
-                      id="requestType"
-                      v-model="requestType"
-                      class="form-select"
-                      required
-                    >
-                      <option value="">
-                        Select a request type
-                      </option>
+            <div class="col-12 col-md-6">
+              <label for="customerName" class="form-label fw-bold">
+                Your name
+              </label>
+              <input
+                id="customerName"
+                v-model="customerName"
+                class="form-control"
+                type="text"
+                placeholder="For example, Luis"
+                required
+              >
+            </div>
 
-                      <option>Collection order</option>
-                      <option>General enquiry</option>
-                    </select>
-                  </div>
+            <div class="col-8">
+              <label for="customerEmail" class="form-label fw-bold">
+                Email
+              </label>
+              <input
+                id="customerEmail"
+                v-model="customerEmail"
+                class="form-control"
+                type="text"
+                placeholder="For example, user@email.com"
+                required
+              >
+            </div>
 
-                  <div class="col-12 col-md-6">
-                    <label
-                      for="customerName"
-                      class="form-label fw-bold"
-                    >
-                      Your name
-                    </label>
+            <div class="col-12 col-md-4">
+              <label for="collectionTime" class="form-label fw-bold">
+                Collection time
+              </label>
+              <input
+                id="collectionTime"
+                v-model="collectionTime"
+                class="form-control"
+                type="time"
+              >
+            </div>
 
-                    <input
-                      id="customerName"
-                      v-model="customerName"
-                      class="form-control"
-                      type="text"
-                      placeholder="For example, Luis"
-                      required
-                    >
-                  </div>
+            <div class="col-12">
+              <label for="customerMessage" class="form-label fw-bold">
+                Dietary note, message or question
+              </label>
+              <textarea
+                id="customerMessage"
+                v-model="customerMessage"
+                class="form-control"
+                rows="4"
+                maxlength="300"
+                placeholder="Add a short message"
+              ></textarea>
+            </div>
 
-                  <div class="col-12">
-                    <label
-                      for="customerEmail"
-                      class="form-label fw-bold"
-                    >
-                      Email
-                    </label>
-
-                    <input
-                      id="customerEmail"
-                      v-model="customerEmail"
-                      class="form-control"
-                      type="text"
-                      placeholder="For example, user@email.com"
-                      required
-                    >
-                  </div>
-
-                  <div class="col-12 col-md-8">
-                    <label
-                      for="requestedItem"
-                      class="form-label fw-bold"
-                    >
-                      Menu item
-                    </label>
-
-                    <select
-                      id="requestedItem"
-                      v-model="selectedMenuItemId"
-                      class="form-select"
-                      required
-                    >
-                      <option value="">
-                        Select an item
-                      </option>
-
-                      <option
-                        v-for="item in availableMenuItems"
-                        :key="item.id"
-                        :value="String(item.id)"
-                      >
-                        {{ item.name }}
-                      </option>
-                    </select>
-                  </div>
-
-                  <div class="col-12 col-md-4">
-                    <label
-                      for="collectionTime"
-                      class="form-label fw-bold"
-                    >
-                      Collection time
-                    </label>
-
-                    <input
-                      id="collectionTime"
-                      v-model="collectionTime"
-                      class="form-control"
-                      type="time"
-                    >
-                  </div>
-
-                  <div class="col-12">
-                    <label
-                      for="customerMessage"
-                      class="form-label fw-bold"
-                    >
-                      Dietary note, message or question
-                    </label>
-
-                    <textarea
-                      id="customerMessage"
-                      v-model="customerMessage"
-                      class="form-control"
-                      rows="4"
-                      maxlength="300"
-                      placeholder="Add a short message"
-                    ></textarea>
-                  </div>
-
-                  <div class="col-12">
-              <button class="btn btn-greenbite" type="submit" @click.prevent="orderItem">
+            <div class="col-12">
+              <button class="btn btn-greenbite" type="submit">
                 Submit request
               </button>
             </div>
@@ -636,15 +581,38 @@
     </div>
 
     <div class="col-12 col-lg-5">
-      <aside class="card confirmation-card shadow-sm border-0">
-        <div class="card-body p-4">
-          <h3 class="h5 fw-bold">Confirmation preview</h3>
-          <p class="text-secondary">
-            A later exercise will display a dynamic confirmation here.
-          </p>
-          <img :src="ordersImage" alt="Orders image" class="bistro-img mt-4" />
-        </div>
-      </aside>
+      <div class="d-flex flex-column gap-4">
+        
+        <aside class="card confirmation-card shadow-sm border-0">
+          <div class="card-body p-4">
+            <h5 class="fw-bold mb-2">Your Basket</h5>
+            <p v-if="basket.length === 0" class="text-muted small mb-0">Your basket is empty.</p>
+            
+            <ul v-else class="list-group mb-3">
+              <li v-for="(item, index) in basket" :key="index" class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                  <strong>{{ item.name }}</strong> (x{{ item.quantity }})
+                </div>
+                <div>
+                  <span class="badge bg-secondary me-2">{{ formatPrice(item.price * item.quantity) }}</span>
+                  <button type="button" class="btn btn-sm btn-outline-danger" @click="removeFromBasket(index)">Remove</button>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </aside>
+
+        <aside class="card confirmation-card shadow-sm border-0">
+          <div class="card-body p-4">
+            <h3 class="h5 fw-bold">Confirmation preview</h3>
+            <p class="text-secondary">
+              A later exercise will display a dynamic confirmation here.
+            </p>
+            <img :src="ordersImage" alt="Orders image" class="bistro-img mt-4" />
+          </div>
+        </aside>
+
+      </div>
     </div>
 
   </section>
@@ -849,6 +817,7 @@ const featuredItem = ref(null)
 const loadError = ref(null)
 
 const requests = ref([])
+const basket = ref([])
 
 const searchTerm = ref('')
 const selectedCategory = ref('')
@@ -860,7 +829,8 @@ const selectedMenuItemId = ref('')
 const customerEmail = ref('')
 const collectionTime = ref('')
 const customerMessage = ref('')
-
+const isBasketAnimating = ref(false)
+let glowTimeout = null
 
 const categories = computed(() => {
   return [
@@ -945,14 +915,48 @@ function showPage(pageName) {
   window.scrollTo(0, 0)
 }
 
-function requestItem(item) {
-  selectedMenuItemId.value = String(item.id)
-  showPage('request')
+function addToBasket(item) {
+  const existing = basket.value.find(i => i.id === item.id)
+  if (existing) {
+    existing.quantity = (existing.quantity || 1) + 1
+  } else {
+    basket.value.push({ ...item, quantity: 1 })
+  }
+
+  if (glowTimeout) clearTimeout(glowTimeout)
+  
+  isBasketAnimating.value = false
+  
+  setTimeout(() => {
+    isBasketAnimating.value = true
+  }, 10)
+
+  glowTimeout = setTimeout(() => {
+    isBasketAnimating.value = false
+  }, 700)
 }
 
-function orderItem() {
-  if (!selectedMenuItemId.value) {
-    alert('Please select a menu item first')
+function removeFromBasket(index) {
+  if (basket.value[index].quantity > 1) {
+    basket.value[index].quantity -= 1
+  } else {
+    basket.value.splice(index, 1)
+  }
+}
+
+function orderBasket() {
+  if (basket.value.length === 0) {
+    alert('Your basket is empty. Please add items before ordering.')
+    return
+  }
+
+  if (!requestType.value || !customerName.value || !customerEmail.value) {
+    alert('Please fill out all required form fields correctly in order to checkout your basket.')
+    return
+  }
+
+  if (!collectionTime.value) {
+    alert('Please select a collection time.')
     return
   }
 
@@ -960,8 +964,8 @@ function orderItem() {
     customerName: customerName.value,
     customerEmail: customerEmail.value,
     requestType: requestType.value,
-    customerMessage: customerMessage.value,
-    selectedMenuItemId: Number(selectedMenuItemId.value),
+    customerMessage: customerMessage.value || '',
+    basket: basket.value,
     collectionTime: collectionTime.value
   }
 
@@ -975,13 +979,13 @@ function orderItem() {
       return response.json()
     })
     .then((data) => {
-      alert('Request submitted successfully!')
+      alert('Order submitted successfully!')
       requestType.value = ''
       customerName.value = ''
-      selectedMenuItemId.value = ''
       customerEmail.value = ''
       collectionTime.value = ''
       customerMessage.value = ''
+      basket.value = []
       
       fetchRequests()
     })
