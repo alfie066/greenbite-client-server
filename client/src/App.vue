@@ -513,7 +513,7 @@
               </div>
 
               <button type="button" class="btn btn-greenbite btn-lg w-100" @click="addCustomSandwichToBasket">
-                Add custom sub to basket (£{{ calculatedPrice.toFixed(2) }})
+                Add custom sandwich to basket (£{{ calculatedPrice.toFixed(2) }})
               </button>
             </form>
 
@@ -681,7 +681,7 @@
 </div>
 
 
-      <section v-show="page === 'staff'" class="container my-0">
+<section v-show="page === 'staff'" class="container my-0">
   <div class="card page-card staff-page shadow-sm border-0">
     <div class="card-body p-4 p-lg-5">
       <span class="badge staff-label mb-3">
@@ -778,6 +778,14 @@
 
                   </div>
                 </div>
+              </div>
+
+              <!-- ORDER TOTAL SECTION ADDED HERE -->
+              <div v-if="request.basket && request.basket.length > 0" class="d-flex justify-content-between align-items-center mb-3 p-2 bg-white rounded-2 border">
+                <span class="fw-bold text-dark">Order Total:</span>
+                <span class="fw-bold fs-6" style="color: #6f42c1;">
+                  £{{ calculateOrderTotal(request.basket).toFixed(2) }}
+                </span>
               </div>
 
               <div class="mt-auto pt-2 border-top small">
@@ -940,6 +948,7 @@ const customerEmail = ref('')
 const collectionTime = ref('')
 const customerMessage = ref('')
 const isBasketAnimating = ref(false)
+
 let glowTimeout = null
 
 const categories = computed(() => {
@@ -1042,14 +1051,6 @@ function showPage(pageName) {
   page.value = pageName
     if (page.value === 'staff') {
       fetchRequests()
-    }
-
-    if (page.value === 'request' || page.value === 'menu' || page.value === 'create') {
-      loadMenuData()
-    }
-
-    if (page.value === 'create') {
-      fetchSandwichOptions()
     }
 
   window.scrollTo(0, 0)
@@ -1202,6 +1203,20 @@ function fetchRequests() {
     })
 }
 
+function calculateOrderTotal(basket) {
+    if (!basket) return 0;
+    return basket.reduce((total, item) => {
+      let price = 0;
+      if (item.isCustom) {
+        price = item.price || 0;
+      } else {
+        const menuItem = this.getMenuItem(item.id);
+        price = menuItem ? (menuItem.price || 0) : 0;
+      }
+      return total + (price * (item.quantity || 1));
+    }, 0);
+  }
+
 const availableOptions = ref({
   breads: [],
   cheeses: [],
@@ -1266,5 +1281,7 @@ async function loadMenuData() {
 
 onMounted(() => {
   loadInitialData()
+  loadMenuData()
+  fetchSandwichOptions()
 })
 </script>
