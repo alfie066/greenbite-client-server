@@ -780,7 +780,6 @@
                 </div>
               </div>
 
-              <!-- ORDER TOTAL SECTION ADDED HERE -->
               <div v-if="request.basket && request.basket.length > 0" class="d-flex justify-content-between align-items-center mb-3 p-2 bg-white rounded-2 border">
                 <span class="fw-bold text-dark">Order Total:</span>
                 <span class="fw-bold fs-6" style="color: #6f42c1;">
