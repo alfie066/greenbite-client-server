@@ -509,7 +509,7 @@
 
               <div class="alert alert-light border d-flex justify-content-between align-items-center mb-3">
                 <span class="fw-bold text-secondary">Calculated Total:</span>
-                <span class="fs-4 fw-bold text-success">£{{ calculatedPrice.toFixed(2) }}</span>
+                <span class="fs-4 fw-bold" style="color: var(--accent);">£{{ calculatedPrice.toFixed(2) }}</span>
               </div>
 
               <button type="button" class="btn btn-greenbite btn-lg w-100" @click="addCustomSandwichToBasket">
@@ -739,27 +739,33 @@
                   >
                     
                     <div v-if="item.isCustom">
-                      <div class="d-flex justify-content-between align-items-start">
-                        <span class="fw-bold text-dark">
-                          {{ item.name }} 
-                          <span class="badge bg-dark text-white ms-1" style="font-size: 0.65rem;">Custom Sandwich</span>
-                        </span>
-                        <span class="fw-bold text-dark">
-                          £{{ ((item.price || 0) * (item.quantity || 1)).toFixed(2) }}
-                        </span>
+                      <div class="px-3 d-flex justify-content-between align-items-center">
+                        <div>
+                          <span class="fw-bold text-dark">
+                            {{ item.name }} 
+                            <span class="badge bg-dark text-white ms-1" style="font-size: 0.65rem;"></span>
+                          </span>
+                          <div class="small text-muted">
+                            £{{ (item.price || 0).toFixed(2) }} each
+                          </div>
+                        </div>
+                        <div class="text-end">
+                          <span class="fw-bold text-dark">
+                            £{{ ((item.price || 0) * (item.quantity || 1)).toFixed(2) }}
+                          </span>
+                          <div class="small text-muted">Qty: {{ item.quantity }}</div>
+                        </div>
                       </div>
-                      <div class="small text-secondary mt-1">
+
+                      <div class="small text-secondary mt-2 mb-2 px-3">
                         <div><strong>Bread:</strong> {{ item.bread }} | <strong>Cheese:</strong> {{ item.cheese }}</div>
                         <div v-if="item.toppings && item.toppings.length"><strong>Toppings:</strong> {{ item.toppings.join(', ') }}</div>
                         <div v-if="item.sauces && item.sauces.length"><strong>Sauces:</strong> {{ item.sauces.join(', ') }}</div>
                         <div v-if="item.extraNotes"><strong>Note:</strong> {{ item.extraNotes }}</div>
                       </div>
-                      <div class="small text-muted mt-1">
-                        Qty: {{ item.quantity }} (£{{ (item.price || 0).toFixed(2) }} each)
-                      </div>
                     </div>
 
-                    <div v-else class="d-flex justify-content-between align-items-center">
+                    <div v-else class="px-3 d-flex justify-content-between align-items-center">
                       <div>
                         <span class="fw-bold text-dark">
                           {{ getMenuItem(item.id).name }}
@@ -778,20 +784,19 @@
 
                   </div>
                 </div>
-              </div>
 
-              <div v-if="request.basket && request.basket.length > 0" class="d-flex justify-content-between align-items-center mb-3 p-2 bg-white rounded-2 border">
-                <span class="fw-bold text-dark">Order Total:</span>
-                <span class="fw-bold fs-6" style="color: #6f42c1;">
-                  £{{ calculateOrderTotal(request.basket).toFixed(2) }}
-                </span>
-              </div>
+             <div v-if="request.basket && request.basket.length > 0" class="d-flex justify-content-between align-items-center mt-3 pt-2">
+              <span class="fw-bold text-dark">Order Total:</span>
+              <span class="fw-bold fs-6" style="color: #6f42c1;">
+                £{{ calculateOrderTotal(request.basket).toFixed(2) }}
+              </span>
+            </div>
 
               <div class="mt-auto pt-2 border-top small">
                 <strong>Message: </strong> 
                 <span class="text-secondary">{{ request.customerMessage || 'None' }}</span>
               </div>
-
+              </div>
             </div>
           </article>
         </div>
