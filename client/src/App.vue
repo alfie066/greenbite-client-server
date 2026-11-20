@@ -541,10 +541,16 @@
 
           <div v-else class="row g-4 mt-1">
             <div v-for="request in requests" :key="request.id" class="col-12 col-lg-6">
-              <article class="card request-card h-100 shadow-sm border">
+              <article
+  class="card request-card h-100 shadow-sm border"
+  :class="{
+    'request-card-order': request.requestType === 'Collection order',
+    'request-card-enquiry': request.requestType === 'General enquiry'
+  }"
+>
                 <div class="card-body d-flex flex-column">
 
-                  <div class="d-flex justify-content-between align-items-center gap-3 mb-3 pb-2 border-bottom">
+                  <div class="request-header d-flex justify-content-between align-items-center gap-3">
                     <h3 class="h5 fw-bold mb-0 text-dark">
                       {{ request.customerName || 'Anonymous' }}
                     </h3>
@@ -553,11 +559,35 @@
                     </span>
                   </div>
 
-                  <div class="mb-3 small text-secondary">
-                    <div class="mb-1"><strong>Request Type:</strong> {{ request.requestType || 'N/A' }}</div>
-                    <div class="mb-1"><strong>Email:</strong> {{ request.customerEmail || 'N/A' }}</div>
-                    <div class="mb-1"><strong>Preferred Time:</strong> {{ request.collectionTime || 'Not specified' }}
-                    </div>
+                  <div class="request-meta">
+                    <div class="request-type-row">
+  <span class="meta-label">Request Type</span>
+
+  <span
+    class="request-type-badge"
+    :class="{
+      'request-type-order': request.requestType === 'Collection order',
+      'request-type-enquiry': request.requestType === 'General enquiry'
+    }"
+  >
+    {{ request.requestType || 'N/A' }}
+  </span>
+</div>
+                    <div class="request-detail-grid">
+  <div class="request-detail">
+    <span class="request-detail-label">Email</span>
+    <span class="request-detail-value">
+      {{ request.customerEmail || 'N/A' }}
+    </span>
+  </div>
+
+  <div class="request-detail">
+    <span class="request-detail-label">Preferred Time</span>
+    <span class="request-detail-value">
+      {{ request.collectionTime || 'Not specified' }}
+    </span>
+  </div>
+</div>
                   </div>
 
                   <div class="mb-3 flex-grow-1">
@@ -568,14 +598,14 @@
                     </div>
 
                     <div v-else class="d-flex flex-column gap-2">
-                      <div v-for="(item, idx) in request.basket" :key="idx" class="p-2.5 bg-light rounded-2 border">
+                      <div v-for="(item, idx) in request.basket" :key="idx" class="staff-order-item">
 
                         <div v-if="item.isCustom">
                           <div class="px-3 d-flex justify-content-between align-items-center">
                             <div>
                               <span class="fw-bold text-dark">
                                 {{ item.name }}
-                                <span class="badge bg-dark text-white ms-1" style="font-size: 0.65rem;"></span>
+                                <span class="custom-item-badge">CUSTOM</span>
                               </span>
                               <div class="small text-muted">
                                 £{{ (item.price || 0).toFixed(2) }} each
@@ -621,14 +651,14 @@
                     </div>
 
                     <div v-if="request.basket && request.basket.length > 0"
-                      class="d-flex justify-content-between align-items-center mt-3 pt-2">
+                      class="order-total-row d-flex justify-content-between align-items-center">
                       <span class="fw-bold text-dark">Order Total:</span>
                       <span class="fw-bold fs-6" style="color: #6f42c1;">
                         £{{ calculateOrderTotal(request.basket).toFixed(2) }}
                       </span>
                     </div>
 
-                    <div class="mt-auto pt-2 border-top small">
+                    <div class="request-message">
                       <strong>Message: </strong>
                       <span class="text-secondary">{{ request.customerMessage || 'None' }}</span>
                     </div>
