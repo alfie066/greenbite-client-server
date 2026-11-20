@@ -504,3 +504,202 @@ header.sticky-top {
 .basket-glow {
   animation: purpleBasketGlow 0.4s ease-in-out;
 }
+/* Eisa - Staff View order styling */
+
+.staff-order-item {
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--sage-light);
+  box-shadow: 0 2px 6px rgba(30, 26, 34, 0.06);
+}
+
+.staff-order-item + .staff-order-item {
+  margin-top: 0.4rem;
+}
+/* Eisa - Staff customer request card redesign */
+
+.request-card {
+  overflow: hidden;
+  border: 1px solid var(--line) !important;
+  border-radius: 1rem;
+  background: var(--paper);
+  box-shadow: 0 6px 18px rgba(30, 26, 34, 0.08) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.request-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(30, 26, 34, 0.12) !important;
+}
+
+.request-card .card-body {
+  padding: 1.25rem;
+}
+
+
+/* Customer name + reference */
+
+.request-header {
+  margin: -1.25rem -1.25rem 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--mustard-light);
+  border-bottom: 1px solid var(--line);
+}
+
+.request-header h3 {
+  color: var(--ink);
+}
+
+
+/* Customer details */
+
+.request-meta {
+  margin-bottom: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 0.7rem;
+  background: var(--cream);
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.request-meta strong {
+  color: var(--ink);
+}
+
+
+/* Order total */
+
+.order-total-row {
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+  border-radius: 0.7rem;
+  background: var(--green);
+  color: white;
+}
+
+.order-total-row .text-dark {
+  color: white !important;
+}
+
+.order-total-row span:last-child {
+  color: white !important;
+  font-size: 1.05rem !important;
+}
+
+
+/* Customer message */
+
+.request-message {
+  margin-top: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-left: 4px solid var(--mustard);
+  border-radius: 0.5rem;
+  background: var(--cream);
+  font-size: 0.9rem;
+}
+
+.request-message strong {
+  color: var(--ink);
+}
+/* Eisa - Staff View request type badges */
+
+.request-type-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.7rem;
+}
+
+.meta-label {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.request-type-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.request-type-order {
+  background: var(--sage-light);
+  color: var(--green);
+  border: 1px solid var(--sage);
+}
+
+.request-type-enquiry {
+  background: var(--mustard-light);
+  color: var(--ink);
+  border: 1px solid var(--mustard);
+}
+
+
+/* Custom sandwich label */
+
+.custom-item-badge {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.2rem 0.45rem;
+  border-radius: 999px;
+  background: var(--tomato);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+/* Eisa - Staff View customer detail layout */
+
+.request-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+  gap: 0.65rem;
+  margin-top: 0.75rem;
+}
+
+.request-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.6rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  min-width: 0;
+}
+
+.request-detail-label {
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.request-detail-value {
+  color: var(--ink);
+  font-size: 0.85rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+/* Eisa - visually separate orders from enquiries */
+
+.request-card-order {
+  border-top: 4px solid var(--green) !important;
+}
+
+.request-card-enquiry {
+  border-top: 4px solid var(--mustard) !important;
+}
+
+.request-card-order .request-header {
+  background: var(--sage-light);
+}
+
+.request-card-enquiry .request-header {
+  background: var(--mustard-light);
+}
