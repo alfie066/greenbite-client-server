@@ -310,6 +310,9 @@
     <section v-show="page === 'create'" class="container my-0">
       <div class="card page-card shadow-sm border-0">
         <div class="card-body p-4 p-lg-5">
+          <span class="badge greenbite-label mb-3">
+            Custom sandwich builder
+          </span>
 
           <h2 class="display-6 fw-bold mb-3">Create Your Sandwich</h2>
           <p class="text-secondary mb-4">Choose your fillings, sauces, and toppings</p>
@@ -392,20 +395,10 @@
         <div class="col-12 col-lg-7">
           <div class="card page-card shadow-sm border-0">
             <div class="card-body p-4 p-lg-5">
-              <span class="badge greenbite-label mb-3">Customer order</span>
+              <span class="badge greenbite-label mb-3">Customer order page</span>
               <h2 class="display-6 fw-bold">Contact {{ siteDetails.businessName }}</h2>
 
               <form class="row g-3 mt-2" @submit.prevent="orderBasket">
-                <div class="col-12 col-md-6">
-                  <label for="requestType" class="form-label fw-bold">
-                    Request type
-                  </label>
-                  <select id="requestType" v-model="requestType" class="form-select" required>
-                    <option value="">Select a request type</option>
-                    <option>Collection order</option>
-                    <option>General enquiry</option>
-                  </select>
-                </div>
 
                 <div class="col-12 col-md-6">
                   <label for="customerName" class="form-label fw-bold">
@@ -419,7 +412,7 @@
                   <label for="customerEmail" class="form-label fw-bold">
                     Email
                   </label>
-                  <input id="customerEmail" v-model="customerEmail" class="form-control" type="text"
+                  <input id="customerEmail" v-model="customerEmail" class="form-control" type="email"
                     placeholder="For example, user@email.com" required>
                 </div>
 
@@ -523,7 +516,7 @@
     <section v-show="page === 'staff'" class="container my-0">
       <div class="card page-card staff-page shadow-sm border-0">
         <div class="card-body p-4 p-lg-5">
-          <span class="badge staff-label mb-3">
+          <span class="badge greenbite-label mb-3">
             Staff request view
           </span>
 
@@ -541,13 +534,10 @@
 
           <div v-else class="row g-4 mt-1">
             <div v-for="request in requests" :key="request.id" class="col-12 col-lg-6">
-              <article
-  class="card request-card h-100 shadow-sm border"
-  :class="{
-    'request-card-order': request.requestType === 'Collection order',
-    'request-card-enquiry': request.requestType === 'General enquiry'
-  }"
->
+              <article class="card request-card h-100 shadow-sm border" :class="{
+                'request-card-order': request.requestType === 'Collection order',
+                'request-card-enquiry': request.requestType === 'General enquiry'
+              }">
                 <div class="card-body d-flex flex-column">
 
                   <div class="request-header d-flex justify-content-between align-items-center gap-3">
@@ -560,34 +550,23 @@
                   </div>
 
                   <div class="request-meta">
-                    <div class="request-type-row">
-  <span class="meta-label">Request Type</span>
-
-  <span
-    class="request-type-badge"
-    :class="{
-      'request-type-order': request.requestType === 'Collection order',
-      'request-type-enquiry': request.requestType === 'General enquiry'
-    }"
-  >
-    {{ request.requestType || 'N/A' }}
-  </span>
-</div>
                     <div class="request-detail-grid">
-  <div class="request-detail">
-    <span class="request-detail-label">Email</span>
-    <span class="request-detail-value">
-      {{ request.customerEmail || 'N/A' }}
-    </span>
-  </div>
 
-  <div class="request-detail">
-    <span class="request-detail-label">Preferred Time</span>
-    <span class="request-detail-value">
-      {{ request.collectionTime || 'Not specified' }}
-    </span>
-  </div>
-</div>
+                      <div class="request-detail">
+                        <span class="request-detail-label">Email</span>
+                        <span class="request-detail-value">
+                          {{ request.customerEmail || 'N/A' }}
+                        </span>
+                      </div>
+
+                      <div class="request-detail">
+                        <span class="request-detail-label">Collection Time</span>
+                        <span class="request-detail-value">
+                          {{ request.collectionTime || 'Not specified' }}
+                        </span>
+                      </div>
+
+                    </div>
                   </div>
 
                   <div class="mb-3 flex-grow-1">
@@ -652,8 +631,8 @@
 
                     <div v-if="request.basket && request.basket.length > 0"
                       class="order-total-row d-flex justify-content-between align-items-center">
-                      <span class="fw-bold text-dark">Order Total:</span>
-                      <span class="fw-bold fs-6" style="color: #6f42c1;">
+                      <span class="fw-bold">Order Total:</span>
+                      <span class="fw-bold fs-6">
                         £{{ calculateOrderTotal(request.basket).toFixed(2) }}
                       </span>
                     </div>
@@ -811,7 +790,6 @@ const searchTerm = ref('')
 const selectedCategory = ref('')
 const selectedDietaryTag = ref('')
 const availableOnly = ref(false)
-const requestType = ref('')
 const customerName = ref('')
 const selectedMenuItemId = ref('')
 const customerEmail = ref('')
@@ -1012,14 +990,15 @@ function removeFromBasket(index) {
   }
 }
 
+
 function orderBasket() {
   if (basket.value.length === 0) {
     alert('Your basket is empty. Please add items before ordering.')
     return
   }
 
-  if (!requestType.value || !customerName.value || !customerEmail.value) {
-    alert('Please fill out all required form fields correctly in order to checkout your basket.')
+  if (!customerName.value || !customerEmail.value) {
+    alert('Please enter your name and email address.')
     return
   }
 
@@ -1031,7 +1010,6 @@ function orderBasket() {
   const orderData = {
     customerName: customerName.value,
     customerEmail: customerEmail.value,
-    requestType: requestType.value,
     customerMessage: customerMessage.value || '',
     basket: basket.value,
     collectionTime: collectionTime.value
@@ -1048,7 +1026,7 @@ function orderBasket() {
     })
     .then((data) => {
       alert('Order submitted successfully!')
-      requestType.value = ''
+
       customerName.value = ''
       customerEmail.value = ''
       collectionTime.value = ''

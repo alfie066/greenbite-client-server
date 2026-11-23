@@ -504,7 +504,6 @@ header.sticky-top {
 .basket-glow {
   animation: purpleBasketGlow 0.4s ease-in-out;
 }
-/* Eisa - Staff View order styling */
 
 .staff-order-item {
   padding: 1rem;
@@ -517,7 +516,6 @@ header.sticky-top {
 .staff-order-item + .staff-order-item {
   margin-top: 0.4rem;
 }
-/* Eisa - Staff customer request card redesign */
 
 .request-card {
   overflow: hidden;
@@ -537,9 +535,6 @@ header.sticky-top {
   padding: 1.25rem;
 }
 
-
-/* Customer name + reference */
-
 .request-header {
   margin: -1.25rem -1.25rem 1rem;
   padding: 1rem 1.25rem;
@@ -551,8 +546,6 @@ header.sticky-top {
   color: var(--ink);
 }
 
-
-/* Customer details */
 
 .request-meta {
   margin-bottom: 1rem;
@@ -568,27 +561,19 @@ header.sticky-top {
 }
 
 
-/* Order total */
-
 .order-total-row {
   margin-top: 1rem;
   padding: 0.9rem 1rem;
   border-radius: 0.7rem;
-  background: var(--green);
+  background: black;
   color: white;
 }
 
-.order-total-row .text-dark {
-  color: white !important;
-}
-
 .order-total-row span:last-child {
-  color: white !important;
   font-size: 1.05rem !important;
 }
 
 
-/* Customer message */
 
 .request-message {
   margin-top: 0.75rem;
@@ -602,7 +587,6 @@ header.sticky-top {
 .request-message strong {
   color: var(--ink);
 }
-/* Eisa - Staff View request type badges */
 
 .request-type-row {
   display: flex;
@@ -639,7 +623,6 @@ header.sticky-top {
 }
 
 
-/* Custom sandwich label */
 
 .custom-item-badge {
   display: inline-block;
@@ -652,7 +635,6 @@ header.sticky-top {
   font-weight: 700;
   letter-spacing: 0.04em;
 }
-/* Eisa - Staff View customer detail layout */
 
 .request-detail-grid {
   display: grid;
@@ -686,7 +668,6 @@ header.sticky-top {
   font-weight: 600;
   overflow-wrap: anywhere;
 }
-/* Eisa - visually separate orders from enquiries */
 
 .request-card-order {
   border-top: 4px solid var(--green) !important;

@@ -212,24 +212,24 @@ app.get('/api/requests', (request, response) => {
   response.json(currentRequests)
 })
 
+
 app.post('/api/requests', (req, res) => {
   const {
     customerName,
     customerEmail,
-    requestType,
     customerMessage,
     basket,
     collectionTime
   } = req.body
 
-
-  if (!customerName || !customerEmail || !requestType || !collectionTime) {
+  if (!customerName || !customerEmail || !collectionTime) {
     return res.status(400).json({
       message: 'Required request fields are missing.'
     })
   }
 
   let requestsData = []
+
   try {
     if (fs.existsSync(requestsFile)) {
       requestsData = JSON.parse(fs.readFileSync(requestsFile, 'utf8'))
@@ -238,16 +238,17 @@ app.post('/api/requests', (req, res) => {
     console.error('Error reading requests.json:', error)
   }
 
-  const newId = requestsData.length > 0 ? Math.max(...requestsData.map(r => r.id)) + 1 : 1
+  const newId = requestsData.length > 0
+    ? Math.max(...requestsData.map(r => r.id)) + 1
+    : 1
 
   const newRequest = {
     id: newId,
     customerName,
     customerEmail,
-    requestType,
     customerMessage: customerMessage || '',
     basket: basket || [],
-    collectionTime: collectionTime || '',
+    collectionTime,
     createdAt: new Date().toISOString()
   }
 
@@ -261,6 +262,9 @@ app.post('/api/requests', (req, res) => {
     )
   } catch (error) {
     console.error('Error writing to requests.json:', error)
+    return res.status(500).json({
+      message: 'Failed to save request.'
+    })
   }
 
   res.status(201).json({
