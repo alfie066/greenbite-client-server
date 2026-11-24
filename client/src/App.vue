@@ -228,8 +228,34 @@
               </div>
 
               <div class="col-12">
-                <div class="form-check">
-                  <input id="availableOnly" v-model="availableOnly" class="form-check-input" type="checkbox">
+  <div class="dietary-match-panel">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+      <span class="fw-bold">Dietary & Preference Match</span>
+
+      <span class="small text-secondary">
+        {{ selectedDietaryTags.length }}
+        selected
+      </span>
+    </div>
+
+    <div class="d-flex flex-wrap gap-2">
+      <button
+        v-for="tag in dietaryTags"
+        :key="`dietary-match-${tag}`"
+        type="button"
+        class="dietary-match-button"
+        :class="{ active: selectedDietaryTags.includes(tag) }"
+        @click="toggleDietaryTag(tag)"
+      >
+        {{ tag }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="col-12">
+  <div class="form-check">
+    <input id="availableOnly" v-model="availableOnly" class="form-check-input" type="checkbox">
 
                   <label class="form-check-label" for="availableOnly">
                     Show available items only
@@ -789,6 +815,7 @@ const basket = ref([])
 const searchTerm = ref('')
 const selectedCategory = ref('')
 const selectedDietaryTag = ref('')
+const selectedDietaryTags = ref([])
 const availableOnly = ref(false)
 const customerName = ref('')
 const selectedMenuItemId = ref('')
@@ -865,25 +892,30 @@ const filteredMenuItems = computed(() => {
           .toLowerCase()
           .includes(normalisedSearch)
       })
-
-    const matchesCategory =
-      selectedCategory.value === '' ||
-      item.category === selectedCategory.value
-
+const matchesCategory =
+  selectedCategory.value === '' ||
+  item.category === selectedCategory.value
     const matchesDietaryTag =
-      selectedDietaryTag.value === '' ||
-      itemTags.includes(selectedDietaryTag.value)
+  selectedDietaryTag.value === '' ||
+  itemTags.includes(selectedDietaryTag.value)
 
-    const matchesAvailability =
-      !availableOnly.value ||
-      item.available
+const matchesDietaryMatch =
+  selectedDietaryTags.value.length === 0 ||
+  selectedDietaryTags.value.every((tag) => {
+    return itemTags.includes(tag)
+  })
 
-    return (
-      matchesSearch &&
-      matchesCategory &&
-      matchesDietaryTag &&
-      matchesAvailability
-    )
+const matchesAvailability =
+  !availableOnly.value ||
+  item.available
+
+return (
+  matchesSearch &&
+  matchesCategory &&
+  matchesDietaryTag &&
+  matchesDietaryMatch &&
+  matchesAvailability
+)
   })
 })
 
@@ -1081,10 +1113,21 @@ function fetchSandwichOptions() {
     .catch(error => console.error('Error fetching sandwich options:', error))
 }
 
+function toggleDietaryTag(tag) {
+  if (selectedDietaryTags.value.includes(tag)) {
+    selectedDietaryTags.value = selectedDietaryTags.value.filter(
+      selectedTag => selectedTag !== tag
+    )
+  } else {
+    selectedDietaryTags.value.push(tag)
+  }
+}
+
 function clearFilters() {
   searchTerm.value = ''
   selectedCategory.value = ''
   selectedDietaryTag.value = ''
+  selectedDietaryTags.value = []
   availableOnly.value = false
 }
 
