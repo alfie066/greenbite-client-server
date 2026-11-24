@@ -47,7 +47,12 @@
                 active: page === 'request',
                 'basket-glow': isBasketAnimating
               }" :aria-current="page === 'request' ? 'page' : undefined" @click="showPage('request')">
-                Basket and Order
+                Basket and Order ({{ basketItemCount }})
+              </button>
+
+              <button type="button" class="nav-link nav-button" :class="{ active: page === 'tracking' }"
+                :aria-current="page === 'tracking' ? 'page' : undefined" @click="showPage('tracking')">
+                Track Order
               </button>
 
               <button type="button" class="nav-link nav-button" :class="{ active: page === 'staff' }"
@@ -419,8 +424,14 @@
                   <label for="customerEmail" class="form-label fw-bold">
                     Email
                   </label>
-                  <input id="customerEmail" v-model="customerEmail" class="form-control" type="text"
-                    placeholder="For example, user@email.com" required>
+                  <input id="customerEmail" v-model="customerEmail" class="form-control" type="email"
+                    placeholder="For example, user@email.com" required
+                    :aria-invalid="customerEmailError ? 'true' : 'false'"
+                    :aria-describedby="customerEmailError ? 'customerEmailError' : undefined"
+                    @input="validateCustomerEmail" @blur="validateCustomerEmail">
+                  <div v-if="customerEmailError" id="customerEmailError" class="invalid-feedback d-block" role="alert">
+                    {{ customerEmailError }}
+                  </div>
                 </div>
 
                 <div class="col-12 col-md-4">
@@ -507,9 +518,9 @@
         <div class="col-12 col-lg-5 mb-4">
           <aside class="card confirmation-card shadow-sm border-0">
             <div class="card-body p-4">
-              <h3 class="h5 fw-bold">Confirmation preview</h3>
+              <h3 class="h5 fw-bold">Order confirmation</h3>
               <p class="text-secondary">
-                A later exercise will display a dynamic confirmation here.
+                Details for a successfully submitted collection order will appear on the confirmation screen.
               </p>
               <img :src="ordersImage" alt="Orders image" class="bistro-img mt-4" />
             </div>
@@ -519,6 +530,92 @@
       </section>
     </div>
 
+
+    <section v-show="page === 'confirmation'" class="container my-0">
+      <div class="card page-card order-confirmation-card shadow-sm border-0">
+        <div class="card-body p-4 p-lg-5">
+          <div v-if="confirmedOrder" aria-live="polite">
+            <span class="badge greenbite-label mb-3">Aston Bistro collection order</span>
+            <h2 class="display-6 fw-bold mb-2">Order confirmed</h2>
+            <p class="confirmation-order-number mb-4">
+              Order #{{ confirmedOrder.reference }}
+            </p>
+
+            <div class="confirmation-details p-3 p-md-4 mb-4">
+              <p><strong>Customer name:</strong> {{ confirmedOrder.customerName }}</p>
+              <p><strong>Customer email:</strong> {{ confirmedOrder.customerEmail }}</p>
+              <p><strong>Collection time:</strong> {{ confirmedOrder.collectionTime || 'Not specified' }}</p>
+              <p>
+                <strong>Order status:</strong>
+                <span class="badge order-status-badge ms-2">{{ confirmedOrder.status }}</span>
+              </p>
+              <p class="mb-0"><strong>Order total:</strong> {{ formatPrice(confirmedOrder.total) }}</p>
+            </div>
+
+            <p class="text-secondary mb-4">
+              Keep your order number handy. You will need it and your email address to track your order.
+            </p>
+
+            <div class="d-flex flex-wrap gap-3">
+              <button class="btn btn-greenbite" type="button" @click="trackSubmittedOrder">
+                Track Order
+              </button>
+              <button class="btn btn-outline-greenbite" type="button" @click="showPage('home')">
+                Back to Home
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section v-show="page === 'tracking'" class="container my-0">
+      <div class="card page-card shadow-sm border-0">
+        <div class="card-body p-4 p-lg-5">
+          <span class="badge greenbite-label mb-3">Collection order tracking</span>
+          <h2 class="display-6 fw-bold">Track your order</h2>
+          <p class="text-secondary mb-4">
+            Enter both your order reference and the email address used when placing the order.
+          </p>
+
+          <form class="row g-3" @submit.prevent="trackOrder">
+            <div class="col-12 col-md-6">
+              <label for="trackingReference" class="form-label fw-bold">Order reference</label>
+              <input id="trackingReference" v-model="trackingReference" class="form-control" type="number" min="1"
+                step="1" placeholder="For example, 12" required>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label for="trackingEmail" class="form-label fw-bold">Email address</label>
+              <input id="trackingEmail" v-model="trackingEmail" class="form-control" type="email"
+                placeholder="The email used for your order" required>
+            </div>
+
+            <div class="col-12">
+              <button class="btn btn-greenbite" type="submit" :disabled="isTrackingOrder">
+                {{ isTrackingOrder ? 'Checking order...' : 'Track order' }}
+              </button>
+            </div>
+          </form>
+
+          <div v-if="trackingError" class="alert alert-warning mt-4 mb-0" role="alert">
+            {{ trackingError }}
+          </div>
+
+          <div v-if="trackedOrder" class="tracking-result mt-4 p-4" aria-live="polite">
+            <h3 class="h5 fw-bold mb-3">Order #{{ trackedOrder.id }}</h3>
+            <p class="mb-2">
+              <strong>Current status:</strong>
+              <span class="badge order-status-badge ms-2">{{ trackedOrder.status }}</span>
+            </p>
+            <p class="mb-0">
+              <strong>Collection time:</strong>
+              {{ trackedOrder.collectionTime || 'Not specified' }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <section v-show="page === 'staff'" class="container my-0">
       <div class="card page-card staff-page shadow-sm border-0">
@@ -558,6 +655,27 @@
                     <div class="mb-1"><strong>Email:</strong> {{ request.customerEmail || 'N/A' }}</div>
                     <div class="mb-1"><strong>Preferred Time:</strong> {{ request.collectionTime || 'Not specified' }}
                     </div>
+                  </div>
+
+                  <div v-if="request.requestType === 'Collection order'" class="staff-status-control mb-3">
+                    <label :for="`request-status-${request.id}`" class="form-label fw-bold mb-1">
+                      Order status
+                    </label>
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                      <span class="badge order-status-badge">{{ request.status || 'Received' }}</span>
+                      <select :id="`request-status-${request.id}`" class="form-select form-select-sm"
+                        :value="request.status || 'Received'" :disabled="updatingRequestIds.includes(request.id)"
+                        :aria-label="`Update status for order ${request.id}`"
+                        @change="updateRequestStatus(request, $event.target.value)">
+                        <option v-for="status in orderStatuses" :key="status" :value="status">
+                          {{ status }}
+                        </option>
+                      </select>
+                    </div>
+                    <p class="small text-secondary mt-1 mb-0">Status changes save automatically.</p>
+                    <p v-if="requestStatusErrors[request.id]" class="small text-danger mt-1 mb-0" role="alert">
+                      {{ requestStatusErrors[request.id] }}
+                    </p>
                   </div>
 
                   <div class="mb-3 flex-grow-1">
@@ -776,6 +894,26 @@ const loadError = ref(null)
 
 const requests = ref([])
 const basket = ref([])
+const basketItemCount = computed(() => {
+  return basket.value.reduce((total, item) => {
+    return total + (Number(item.quantity) || 0)
+  }, 0)
+})
+const orderStatuses = [
+  'Received',
+  'Being prepared',
+  'Ready for collection',
+  'Collected',
+  'Cancelled'
+]
+const confirmedOrder = ref(null)
+const trackingReference = ref('')
+const trackingEmail = ref('')
+const trackedOrder = ref(null)
+const trackingError = ref('')
+const isTrackingOrder = ref(false)
+const updatingRequestIds = ref([])
+const requestStatusErrors = ref({})
 
 const searchTerm = ref('')
 const selectedCategory = ref('')
@@ -785,6 +923,7 @@ const requestType = ref('')
 const customerName = ref('')
 const selectedMenuItemId = ref('')
 const customerEmail = ref('')
+const customerEmailError = ref('')
 const collectionTime = ref('')
 const customerMessage = ref('')
 const isBasketAnimating = ref(false)
@@ -895,6 +1034,54 @@ function showPage(pageName) {
 
   window.scrollTo(0, 0)
 }
+
+async function trackOrder() {
+  const orderId = String(trackingReference.value).trim()
+  const email = trackingEmail.value.trim()
+  trackedOrder.value = null
+  trackingError.value = ''
+
+  if (!orderId || !email) {
+    trackingError.value = 'Enter both your order reference and email address.'
+    return
+  }
+
+  isTrackingOrder.value = true
+  try {
+    const response = await fetch('/api/requests/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: orderId, customerEmail: email })
+    })
+    const data = await response.json()
+
+    if (response.status === 404) {
+      trackingError.value =
+        'We could not find an order matching that reference and email. Check both details and try again.'
+      return
+    }
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Unable to retrieve the order status.')
+    }
+
+    trackedOrder.value = data
+  } catch (error) {
+    console.error('Error tracking order:', error)
+    trackingError.value = error.message || 'Unable to retrieve the order status. Please try again.'
+  } finally {
+    isTrackingOrder.value = false
+  }
+}
+
+function trackSubmittedOrder() {
+  trackingReference.value = String(confirmedOrder.value.reference)
+  trackingEmail.value = confirmedOrder.value.customerEmail
+  trackedOrder.value = null
+  trackingError.value = ''
+  showPage('tracking')
+}
+
 const customSandwich = ref({
   name: '',
   bread: '',
@@ -982,16 +1169,35 @@ function removeFromBasket(index) {
   }
 }
 
+function validateCustomerEmail() {
+  const email = customerEmail.value.trim()
+  customerEmailError.value = email && !isValidEmail(email)
+    ? 'Please enter a valid email address.'
+    : ''
+}
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+}
+
 function orderBasket() {
   if (basket.value.length === 0) {
     alert('Your basket is empty. Please add items before ordering.')
     return
   }
 
-  if (!requestType.value || !customerName.value || !customerEmail.value) {
+  if (!requestType.value || !customerName.value) {
     alert('Please fill out all required form fields correctly in order to checkout your basket.')
     return
   }
+
+  const trimmedEmail = customerEmail.value.trim()
+  if (!isValidEmail(trimmedEmail)) {
+    customerEmailError.value = 'Please enter a valid email address.'
+    return
+  }
+  customerEmail.value = trimmedEmail
+  customerEmailError.value = ''
 
   if (!collectionTime.value) {
     alert('Please select a collection time.')
@@ -1006,6 +1212,7 @@ function orderBasket() {
     basket: basket.value,
     collectionTime: collectionTime.value
   }
+  const orderTotal = calculateOrderTotal(orderData.basket)
 
   fetch('/api/requests', {
     method: 'POST',
@@ -1017,15 +1224,40 @@ function orderBasket() {
       return response.json()
     })
     .then((data) => {
-      alert('Order submitted successfully!')
+      const isCollectionOrder = orderData.requestType === 'Collection order'
+
+      if (isCollectionOrder) {
+        if (data.request?.id === undefined || data.request?.id === null) {
+          throw new Error('The server did not return an order reference.')
+        }
+
+        confirmedOrder.value = {
+          reference: data.request.id,
+          customerName: orderData.customerName,
+          customerEmail: orderData.customerEmail,
+          collectionTime: orderData.collectionTime,
+          status: data.request.status ?? 'Received',
+          total: orderTotal
+        }
+      } else {
+        confirmedOrder.value = null
+      }
+
       requestType.value = ''
       customerName.value = ''
       customerEmail.value = ''
+      customerEmailError.value = ''
       collectionTime.value = ''
       customerMessage.value = ''
       basket.value = []
 
       fetchRequests()
+
+      if (isCollectionOrder) {
+        showPage('confirmation')
+      } else {
+        alert('Order submitted successfully!')
+      }
     })
     .catch((error) => {
       console.error('Error submitting request:', error)
@@ -1043,6 +1275,45 @@ function fetchRequests() {
     })
 }
 
+async function updateRequestStatus(request, status) {
+  if (!orderStatuses.includes(status)) {
+    requestStatusErrors.value = {
+      ...requestStatusErrors.value,
+      [request.id]: 'Choose a valid order status.'
+    }
+    return
+  }
+
+  requestStatusErrors.value = {
+    ...requestStatusErrors.value,
+    [request.id]: ''
+  }
+  updatingRequestIds.value = [...updatingRequestIds.value, request.id]
+
+  try {
+    const response = await fetch(`/api/requests/${request.id}/status`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status })
+    })
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Unable to update the order status.')
+    }
+
+    request.status = data.request.status
+  } catch (error) {
+    console.error('Error updating order status:', error)
+    requestStatusErrors.value = {
+      ...requestStatusErrors.value,
+      [request.id]: error.message || 'Unable to update the order status. Please try again.'
+    }
+  } finally {
+    updatingRequestIds.value = updatingRequestIds.value.filter((id) => id !== request.id)
+  }
+}
+
 function calculateOrderTotal(basket) {
   if (!basket) return 0;
   return basket.reduce((total, item) => {
@@ -1050,7 +1321,7 @@ function calculateOrderTotal(basket) {
     if (item.isCustom) {
       price = item.price || 0;
     } else {
-      const menuItem = this.getMenuItem(item.id);
+      const menuItem = getMenuItem(item.id);
       price = menuItem ? (menuItem.price || 0) : 0;
     }
     return total + (price * (item.quantity || 1));

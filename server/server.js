@@ -188,8 +188,14 @@ app.get('/api/sandwich-options', (req, res) => {
 
 const requestsFile = path.join(__dirname, 'requests.json')
 const featuredItemId = 2
-
-let requests = loadRequests()
+const COLLECTION_REQUEST_TYPE = 'Collection order'
+const ALLOWED_REQUEST_STATUSES = [
+  'Received',
+  'Being prepared',
+  'Ready for collection',
+  'Collected',
+  'Cancelled'
+]
 
 app.get('/api/site-details', (request, response) => {
   response.json(siteDetails)
@@ -212,6 +218,98 @@ app.get('/api/requests', (request, response) => {
   response.json(currentRequests)
 })
 
+app.patch('/api/requests/:id/status', (req, res) => {
+  const numericId = parseNumericId(req.params.id)
+  const { status } = req.body
+
+  if (!Number.isInteger(numericId) || numericId < 1) {
+    return res.status(400).json({
+      message: 'A valid numeric order ID is required.'
+    })
+  }
+
+  if (!ALLOWED_REQUEST_STATUSES.includes(status)) {
+    return res.status(400).json({
+      message: 'Invalid order status.'
+    })
+  }
+
+  const requestsData = loadRequests()
+  const requestToUpdate = requestsData.find((request) => request.id === numericId)
+
+  if (!requestToUpdate) {
+    return res.status(404).json({
+      message: 'Request not found.'
+    })
+  }
+
+  if (requestToUpdate.requestType !== COLLECTION_REQUEST_TYPE) {
+    return res.status(400).json({
+      message: 'Status updates are only available for collection orders.'
+    })
+  }
+
+  requestToUpdate.status = status
+
+  try {
+    saveRequests(requestsData)
+  } catch (error) {
+    console.error('Error saving updated request:', error)
+    return res.status(500).json({
+      message: 'Unable to update request status.'
+    })
+  }
+
+  res.json({
+    message: 'Request status updated successfully.',
+    request: requestToUpdate
+  })
+})
+
+app.post('/api/requests/track', (req, res) => {
+  const { id, customerEmail } = req.body
+
+  if (
+    id === undefined ||
+    id === null ||
+    typeof customerEmail !== 'string' ||
+    customerEmail.trim() === ''
+  ) {
+    return res.status(404).json({
+      message: 'Order not found.'
+    })
+  }
+
+  const numericId = parseNumericId(id)
+  if (!Number.isInteger(numericId) || numericId < 1) {
+    return res.status(404).json({
+      message: 'Order not found.'
+    })
+  }
+
+  const normalisedEmail = customerEmail.trim().toLowerCase()
+  const requestsData = loadRequests()
+  const matchingRequest = requestsData.find((request) => {
+    if (request.id !== numericId) return false
+    if (request.requestType !== COLLECTION_REQUEST_TYPE) return false
+    if (typeof request.customerEmail !== 'string') return false
+
+    return request.customerEmail.trim().toLowerCase() === normalisedEmail
+  })
+
+  if (!matchingRequest) {
+    return res.status(404).json({
+      message: 'Order not found.'
+    })
+  }
+
+  res.json({
+    id: matchingRequest.id,
+    status: matchingRequest.status,
+    collectionTime: matchingRequest.collectionTime || ''
+  })
+})
+
 app.post('/api/requests', (req, res) => {
   const {
     customerName,
@@ -222,45 +320,47 @@ app.post('/api/requests', (req, res) => {
     collectionTime
   } = req.body
 
+  const trimmedEmail = typeof customerEmail === 'string'
+    ? customerEmail.trim()
+    : ''
 
-  if (!customerName || !customerEmail || !requestType || !collectionTime) {
+  if (!customerName || !trimmedEmail || !requestType || !collectionTime) {
     return res.status(400).json({
       message: 'Required request fields are missing.'
     })
   }
 
-  let requestsData = []
-  try {
-    if (fs.existsSync(requestsFile)) {
-      requestsData = JSON.parse(fs.readFileSync(requestsFile, 'utf8'))
-    }
-  } catch (error) {
-    console.error('Error reading requests.json:', error)
+  if (!isValidEmail(trimmedEmail)) {
+    return res.status(400).json({
+      message: 'Please enter a valid email address.'
+    })
   }
+
+  const requestsData = loadRequests()
 
   const newId = requestsData.length > 0 ? Math.max(...requestsData.map(r => r.id)) + 1 : 1
 
   const newRequest = {
     id: newId,
     customerName,
-    customerEmail,
+    customerEmail: trimmedEmail,
     requestType,
     customerMessage: customerMessage || '',
     basket: basket || [],
     collectionTime: collectionTime || '',
+    status: requestType === COLLECTION_REQUEST_TYPE ? 'Received' : null,
     createdAt: new Date().toISOString()
   }
 
   requestsData.push(newRequest)
 
   try {
-    fs.writeFileSync(
-      requestsFile,
-      JSON.stringify(requestsData, null, 2),
-      'utf8'
-    )
+    saveRequests(requestsData)
   } catch (error) {
     console.error('Error writing to requests.json:', error)
+    return res.status(500).json({
+      message: 'Unable to save request.'
+    })
   }
 
   res.status(201).json({
@@ -288,10 +388,48 @@ function loadRequests() {
   try {
     if (fs.existsSync(requestsFile)) {
       const fileContent = fs.readFileSync(requestsFile, 'utf8')
-      return JSON.parse(fileContent)
+      const requestsData = JSON.parse(fileContent)
+
+      return requestsData.map((request) => {
+        if (request.requestType !== COLLECTION_REQUEST_TYPE) {
+          return { ...request, status: null }
+        }
+
+        return {
+          ...request,
+          status: ALLOWED_REQUEST_STATUSES.includes(request.status)
+            ? request.status
+            : 'Received'
+        }
+      })
     }
   } catch (error) {
     console.error('Error reading requests.json:', error)
   }
   return []
+}
+
+function saveRequests(requestsData) {
+  fs.writeFileSync(
+    requestsFile,
+    JSON.stringify(requestsData, null, 2),
+    'utf8'
+  )
+}
+
+function parseNumericId(value) {
+  if (typeof value === 'number') {
+    return Number.isInteger(value) && value >= 1 ? value : NaN
+  }
+
+  if (typeof value === 'string' && /^\d+$/.test(value.trim())) {
+    const numericId = Number(value.trim())
+    return Number.isInteger(numericId) && numericId >= 1 ? numericId : NaN
+  }
+
+  return NaN
+}
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }

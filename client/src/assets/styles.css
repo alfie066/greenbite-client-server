@@ -504,3 +504,50 @@ header.sticky-top {
 .basket-glow {
   animation: purpleBasketGlow 0.4s ease-in-out;
 }
+
+.tracking-result {
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--mustard);
+  border-radius: 0.9rem;
+  background: var(--sage-light);
+}
+
+.badge.order-status-badge {
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--mustard);
+  border-radius: 0.45rem;
+  background: var(--mustard-light);
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.order-confirmation-card {
+  border-top: 5px solid var(--mustard) !important;
+}
+
+.confirmation-order-number {
+  color: var(--green);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+.confirmation-details {
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: var(--sage-light);
+}
+
+.confirmation-details p {
+  margin-bottom: 0.8rem;
+}
+
+.staff-status-control {
+  max-width: 24rem;
+}
+
+.staff-status-control .form-select {
+  width: auto;
+  min-width: 11rem;
+}
