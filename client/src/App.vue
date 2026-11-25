@@ -195,7 +195,7 @@
                   placeholder="Search by name, category or dietary tag">
               </div>
 
-              <div class="col-12 col-md-6 col-lg-3">
+              <div class="col-12 col-md-6 col-lg-6">
                 <label for="categoryFilter" class="form-label fw-bold">
                   Category
                 </label>
@@ -211,21 +211,6 @@
                 </select>
               </div>
 
-              <div class="col-12 col-md-6 col-lg-3">
-                <label for="dietaryFilter" class="form-label fw-bold">
-                  Dietary tag
-                </label>
-
-                <select id="dietaryFilter" v-model="selectedDietaryTag" class="form-select">
-                  <option value="">
-                    All dietary tags
-                  </option>
-
-                  <option v-for="tag in dietaryTags" :key="tag" :value="tag">
-                    {{ tag }}
-                  </option>
-                </select>
-              </div>
 
               <div class="col-12">
   <div class="dietary-match-panel">
