@@ -684,3 +684,34 @@ header.sticky-top {
 .request-card-enquiry .request-header {
   background: var(--mustard-light);
 }
+/* Eisa - Multi dietary selection feature */
+
+.dietary-match-panel {
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--cream);
+}
+
+.dietary-match-button {
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--mustard);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dietary-match-button:hover {
+  background: var(--mustard-light);
+}
+
+.dietary-match-button.active {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
