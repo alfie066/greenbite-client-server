@@ -3,7 +3,6 @@
     "id": 1,
     "customerName": "tes1",
     "customerEmail": "ferrhth",
-    "requestType": "General enquiry",
     "customerMessage": "ttset11",
     "basket": [
       {
@@ -51,7 +50,6 @@
     "id": 2,
     "customerName": "222",
     "customerEmail": "222",
-    "requestType": "Collection order",
     "customerMessage": "test",
     "basket": [
       {
@@ -66,7 +64,6 @@
     "id": 3,
     "customerName": "test",
     "customerEmail": "test",
-    "requestType": "Collection order",
     "customerMessage": "tsttest",
     "basket": [
       {
@@ -110,7 +107,6 @@
     "id": 4,
     "customerName": "test",
     "customerEmail": "test",
-    "requestType": "Collection order",
     "customerMessage": "test",
     "basket": [
       {
@@ -138,7 +134,6 @@
     "id": 5,
     "customerName": "af",
     "customerEmail": "af",
-    "requestType": "General enquiry",
     "customerMessage": "af",
     "basket": [
       {

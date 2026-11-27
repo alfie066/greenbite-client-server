@@ -200,7 +200,7 @@
                   placeholder="Search by name, category or dietary tag">
               </div>
 
-              <div class="col-12 col-md-6 col-lg-3">
+              <div class="col-12 col-md-6 col-lg-6">
                 <label for="categoryFilter" class="form-label fw-bold">
                   Category
                 </label>
@@ -216,25 +216,36 @@
                 </select>
               </div>
 
-              <div class="col-12 col-md-6 col-lg-3">
-                <label for="dietaryFilter" class="form-label fw-bold">
-                  Dietary tag
-                </label>
-
-                <select id="dietaryFilter" v-model="selectedDietaryTag" class="form-select">
-                  <option value="">
-                    All dietary tags
-                  </option>
-
-                  <option v-for="tag in dietaryTags" :key="tag" :value="tag">
-                    {{ tag }}
-                  </option>
-                </select>
-              </div>
 
               <div class="col-12">
-                <div class="form-check">
-                  <input id="availableOnly" v-model="availableOnly" class="form-check-input" type="checkbox">
+  <div class="dietary-match-panel">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+      <span class="fw-bold">Dietary & Preference Match</span>
+
+      <span class="small text-secondary">
+        {{ selectedDietaryTags.length }}
+        selected
+      </span>
+    </div>
+
+    <div class="d-flex flex-wrap gap-2">
+      <button
+        v-for="tag in dietaryTags"
+        :key="`dietary-match-${tag}`"
+        type="button"
+        class="dietary-match-button"
+        :class="{ active: selectedDietaryTags.includes(tag) }"
+        @click="toggleDietaryTag(tag)"
+      >
+        {{ tag }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="col-12">
+  <div class="form-check">
+    <input id="availableOnly" v-model="availableOnly" class="form-check-input" type="checkbox">
 
                   <label class="form-check-label" for="availableOnly">
                     Show available items only
@@ -315,6 +326,9 @@
     <section v-show="page === 'create'" class="container my-0">
       <div class="card page-card shadow-sm border-0">
         <div class="card-body p-4 p-lg-5">
+          <span class="badge greenbite-label mb-3">
+            Custom sandwich builder
+          </span>
 
           <h2 class="display-6 fw-bold mb-3">Create Your Sandwich</h2>
           <p class="text-secondary mb-4">Choose your fillings, sauces, and toppings</p>
@@ -397,20 +411,10 @@
         <div class="col-12 col-lg-7">
           <div class="card page-card shadow-sm border-0">
             <div class="card-body p-4 p-lg-5">
-              <span class="badge greenbite-label mb-3">Customer order</span>
+              <span class="badge greenbite-label mb-3">Customer order page</span>
               <h2 class="display-6 fw-bold">Contact {{ siteDetails.businessName }}</h2>
 
               <form class="row g-3 mt-2" @submit.prevent="orderBasket">
-                <div class="col-12 col-md-6">
-                  <label for="requestType" class="form-label fw-bold">
-                    Request type
-                  </label>
-                  <select id="requestType" v-model="requestType" class="form-select" required>
-                    <option value="">Select a request type</option>
-                    <option>Collection order</option>
-                    <option>General enquiry</option>
-                  </select>
-                </div>
 
                 <div class="col-12 col-md-6">
                   <label for="customerName" class="form-label fw-bold">
@@ -620,7 +624,7 @@
     <section v-show="page === 'staff'" class="container my-0">
       <div class="card page-card staff-page shadow-sm border-0">
         <div class="card-body p-4 p-lg-5">
-          <span class="badge staff-label mb-3">
+          <span class="badge greenbite-label mb-3">
             Staff request view
           </span>
 
@@ -638,10 +642,13 @@
 
           <div v-else class="row g-4 mt-1">
             <div v-for="request in requests" :key="request.id" class="col-12 col-lg-6">
-              <article class="card request-card h-100 shadow-sm border">
+              <article class="card request-card h-100 shadow-sm border" :class="{
+                'request-card-order': request.requestType === 'Collection order',
+                'request-card-enquiry': request.requestType === 'General enquiry'
+              }">
                 <div class="card-body d-flex flex-column">
 
-                  <div class="d-flex justify-content-between align-items-center gap-3 mb-3 pb-2 border-bottom">
+                  <div class="request-header d-flex justify-content-between align-items-center gap-3">
                     <h3 class="h5 fw-bold mb-0 text-dark">
                       {{ request.customerName || 'Anonymous' }}
                     </h3>
@@ -650,10 +657,23 @@
                     </span>
                   </div>
 
-                  <div class="mb-3 small text-secondary">
-                    <div class="mb-1"><strong>Request Type:</strong> {{ request.requestType || 'N/A' }}</div>
-                    <div class="mb-1"><strong>Email:</strong> {{ request.customerEmail || 'N/A' }}</div>
-                    <div class="mb-1"><strong>Preferred Time:</strong> {{ request.collectionTime || 'Not specified' }}
+                  <div class="request-meta">
+                    <div class="request-detail-grid">
+
+                      <div class="request-detail">
+                        <span class="request-detail-label">Email</span>
+                        <span class="request-detail-value">
+                          {{ request.customerEmail || 'N/A' }}
+                        </span>
+                      </div>
+
+                      <div class="request-detail">
+                        <span class="request-detail-label">Collection Time</span>
+                        <span class="request-detail-value">
+                          {{ request.collectionTime || 'Not specified' }}
+                        </span>
+                      </div>
+
                     </div>
                   </div>
 
@@ -686,14 +706,14 @@
                     </div>
 
                     <div v-else class="d-flex flex-column gap-2">
-                      <div v-for="(item, idx) in request.basket" :key="idx" class="p-2.5 bg-light rounded-2 border">
+                      <div v-for="(item, idx) in request.basket" :key="idx" class="staff-order-item">
 
                         <div v-if="item.isCustom">
                           <div class="px-3 d-flex justify-content-between align-items-center">
                             <div>
                               <span class="fw-bold text-dark">
                                 {{ item.name }}
-                                <span class="badge bg-dark text-white ms-1" style="font-size: 0.65rem;"></span>
+                                <span class="custom-item-badge">CUSTOM</span>
                               </span>
                               <div class="small text-muted">
                                 £{{ (item.price || 0).toFixed(2) }} each
@@ -739,14 +759,14 @@
                     </div>
 
                     <div v-if="request.basket && request.basket.length > 0"
-                      class="d-flex justify-content-between align-items-center mt-3 pt-2">
-                      <span class="fw-bold text-dark">Order Total:</span>
-                      <span class="fw-bold fs-6" style="color: #6f42c1;">
+                      class="order-total-row d-flex justify-content-between align-items-center">
+                      <span class="fw-bold">Order Total:</span>
+                      <span class="fw-bold fs-6">
                         £{{ calculateOrderTotal(request.basket).toFixed(2) }}
                       </span>
                     </div>
 
-                    <div class="mt-auto pt-2 border-top small">
+                    <div class="request-message">
                       <strong>Message: </strong>
                       <span class="text-secondary">{{ request.customerMessage || 'None' }}</span>
                     </div>
@@ -918,8 +938,8 @@ const requestStatusErrors = ref({})
 const searchTerm = ref('')
 const selectedCategory = ref('')
 const selectedDietaryTag = ref('')
+const selectedDietaryTags = ref([])
 const availableOnly = ref(false)
-const requestType = ref('')
 const customerName = ref('')
 const selectedMenuItemId = ref('')
 const customerEmail = ref('')
@@ -996,25 +1016,30 @@ const filteredMenuItems = computed(() => {
           .toLowerCase()
           .includes(normalisedSearch)
       })
-
-    const matchesCategory =
-      selectedCategory.value === '' ||
-      item.category === selectedCategory.value
-
+const matchesCategory =
+  selectedCategory.value === '' ||
+  item.category === selectedCategory.value
     const matchesDietaryTag =
-      selectedDietaryTag.value === '' ||
-      itemTags.includes(selectedDietaryTag.value)
+  selectedDietaryTag.value === '' ||
+  itemTags.includes(selectedDietaryTag.value)
 
-    const matchesAvailability =
-      !availableOnly.value ||
-      item.available
+const matchesDietaryMatch =
+  selectedDietaryTags.value.length === 0 ||
+  selectedDietaryTags.value.every((tag) => {
+    return itemTags.includes(tag)
+  })
 
-    return (
-      matchesSearch &&
-      matchesCategory &&
-      matchesDietaryTag &&
-      matchesAvailability
-    )
+const matchesAvailability =
+  !availableOnly.value ||
+  item.available
+
+return (
+  matchesSearch &&
+  matchesCategory &&
+  matchesDietaryTag &&
+  matchesDietaryMatch &&
+  matchesAvailability
+)
   })
 })
 
@@ -1207,7 +1232,6 @@ function orderBasket() {
   const orderData = {
     customerName: customerName.value,
     customerEmail: customerEmail.value,
-    requestType: requestType.value,
     customerMessage: customerMessage.value || '',
     basket: basket.value,
     collectionTime: collectionTime.value
@@ -1344,10 +1368,21 @@ function fetchSandwichOptions() {
     .catch(error => console.error('Error fetching sandwich options:', error))
 }
 
+function toggleDietaryTag(tag) {
+  if (selectedDietaryTags.value.includes(tag)) {
+    selectedDietaryTags.value = selectedDietaryTags.value.filter(
+      selectedTag => selectedTag !== tag
+    )
+  } else {
+    selectedDietaryTags.value.push(tag)
+  }
+}
+
 function clearFilters() {
   searchTerm.value = ''
   selectedCategory.value = ''
   selectedDietaryTag.value = ''
+  selectedDietaryTags.value = []
   availableOnly.value = false
 }
 

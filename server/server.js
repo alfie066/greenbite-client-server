@@ -314,7 +314,6 @@ app.post('/api/requests', (req, res) => {
   const {
     customerName,
     customerEmail,
-    requestType,
     customerMessage,
     basket,
     collectionTime
