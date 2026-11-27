@@ -505,213 +505,49 @@ header.sticky-top {
   animation: purpleBasketGlow 0.4s ease-in-out;
 }
 
-.staff-order-item {
-  padding: 1rem;
+.tracking-result {
   border: 1px solid var(--line);
-  border-radius: 0.75rem;
+  border-left: 5px solid var(--mustard);
+  border-radius: 0.9rem;
   background: var(--sage-light);
-  box-shadow: 0 2px 6px rgba(30, 26, 34, 0.06);
 }
 
-.staff-order-item + .staff-order-item {
-  margin-top: 0.4rem;
-}
-
-.request-card {
-  overflow: hidden;
-  border: 1px solid var(--line) !important;
-  border-radius: 1rem;
-  background: var(--paper);
-  box-shadow: 0 6px 18px rgba(30, 26, 34, 0.08) !important;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.request-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(30, 26, 34, 0.12) !important;
-}
-
-.request-card .card-body {
-  padding: 1.25rem;
-}
-
-.request-header {
-  margin: -1.25rem -1.25rem 1rem;
-  padding: 1rem 1.25rem;
+.badge.order-status-badge {
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--mustard);
+  border-radius: 0.45rem;
   background: var(--mustard-light);
-  border-bottom: 1px solid var(--line);
-}
-
-.request-header h3 {
   color: var(--ink);
+  font-weight: 800;
 }
 
-
-.request-meta {
-  margin-bottom: 1rem;
-  padding: 0.85rem 1rem;
-  border-radius: 0.7rem;
-  background: var(--cream);
-  color: var(--muted);
-  line-height: 1.7;
+.order-confirmation-card {
+  border-top: 5px solid var(--mustard) !important;
 }
 
-.request-meta strong {
-  color: var(--ink);
-}
-
-
-.order-total-row {
-  margin-top: 1rem;
-  padding: 0.9rem 1rem;
-  border-radius: 0.7rem;
-  background: black;
-  color: white;
-}
-
-.order-total-row span:last-child {
-  font-size: 1.05rem !important;
-}
-
-
-
-.request-message {
-  margin-top: 0.75rem;
-  padding: 0.85rem 1rem;
-  border-left: 4px solid var(--mustard);
-  border-radius: 0.5rem;
-  background: var(--cream);
-  font-size: 0.9rem;
-}
-
-.request-message strong {
-  color: var(--ink);
-}
-
-.request-type-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.7rem;
-}
-
-.meta-label {
-  font-weight: 700;
-  color: var(--ink);
-}
-
-.request-type-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.35rem 0.7rem;
-  border-radius: 999px;
-  font-size: 0.78rem;
-  font-weight: 700;
-}
-
-.request-type-order {
-  background: var(--sage-light);
+.confirmation-order-number {
   color: var(--green);
-  border: 1px solid var(--sage);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
 }
 
-.request-type-enquiry {
-  background: var(--mustard-light);
-  color: var(--ink);
-  border: 1px solid var(--mustard);
-}
-
-
-
-.custom-item-badge {
-  display: inline-block;
-  margin-left: 0.4rem;
-  padding: 0.2rem 0.45rem;
-  border-radius: 999px;
-  background: var(--tomato);
-  color: white;
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-}
-
-.request-detail-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
-  gap: 0.65rem;
-  margin-top: 0.75rem;
-}
-
-.request-detail {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  padding: 0.65rem 0.75rem;
-  border-radius: 0.6rem;
-  background: var(--paper);
+.confirmation-details {
   border: 1px solid var(--line);
-  min-width: 0;
-}
-
-.request-detail-label {
-  color: var(--muted);
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.request-detail-value {
-  color: var(--ink);
-  font-size: 0.85rem;
-  font-weight: 600;
-  overflow-wrap: anywhere;
-}
-
-.request-card-order {
-  border-top: 4px solid var(--green) !important;
-}
-
-.request-card-enquiry {
-  border-top: 4px solid var(--mustard) !important;
-}
-
-.request-card-order .request-header {
+  border-radius: 0.9rem;
   background: var(--sage-light);
 }
 
-.request-card-enquiry .request-header {
-  background: var(--mustard-light);
-}
-/* Eisa - Multi dietary selection feature */
-
-.dietary-match-panel {
-  padding: 1rem;
-  border: 1px solid var(--line);
-  border-radius: 0.75rem;
-  background: var(--cream);
+.confirmation-details p {
+  margin-bottom: 0.8rem;
 }
 
-.dietary-match-button {
-  padding: 0.4rem 0.75rem;
-  border: 1px solid var(--mustard);
-  border-radius: 999px;
-  background: var(--paper);
-  color: var(--ink);
-  font-size: 0.8rem;
-  font-weight: 700;
-  text-transform: capitalize;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.staff-status-control {
+  max-width: 24rem;
 }
 
-.dietary-match-button:hover {
-  background: var(--mustard-light);
-}
-
-.dietary-match-button.active {
-  background: var(--green);
-  border-color: var(--green);
-  color: white;
+.staff-status-control .form-select {
+  width: auto;
+  min-width: 11rem;
 }
